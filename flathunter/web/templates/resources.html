@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+About
+{% endblock %}
+
+{% block content %}
+<style>
+  div.row a {
+    color: cyan;
+  }
+
+  div.row a:visited {
+    color: cyan;
+  }
+</style>
+<div class="container">
+  <div class="row text-white my-4">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>As a tenant in Germany, the law is designed to protect your right to have somewhere to live on terms that are fair.
+        Unfortunately, in a very competitive rental market, landlords try to skirt (or in some cases cross) the boundaries of what is legal.
+        Here are some resources to help you know what is fair and to protect your rights.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">The Mietspiegel</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>The city of Berlin collects information about the average rent for different kinds of buildings in different parts of the city.
+      They provide an online service where you can fill in the details of the property you are about to rent, and get an estimate of what rent you should expect to pay.
+      <a href="https://www.stadtentwicklung.berlin.de/wohnen/mietspiegel/">Find out more about the Mietspiegel here</a></p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Mietwucher</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Landlords will often try to significantly raise rents when finding a new tenant for their flat. There are limits on how much they can raise the prices, and
+      when the landlords go over those limits, they are breaking the law. If you offered a rent 20% higher than the average rent for similar apartments, the landlord might
+      be risking a fine. By offering a property for rent at 50% over the average rent for similar flats, they are committing a crime. <a href="https://www.stadtentwicklung.berlin.de/wohnen/mieterfibel/de/m_miete10.shtml">Read more about Mietwucher here.</a></p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Unfair contracts</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Even if the price is fair, the contract you are offered might not be. Ask for a contract draft as early as possible, and compare it with <a href="https://www.hausgold.de/immobilien-mustervorlagen/untermietvertrag-mustervorlage/">a reference contract like this one</a>.
+      If you see terms in the contract that don't look familiar, there is a good chance they are not fair terms. The standard contract protects your rights, and protects the rights of the landlord to the extent permitted by the law.
+      In addition to what it might say in a contract, the basic law that applies to rental all contracts is <a href="https://www.gesetze-im-internet.de/bgb/__549.html">described in depth in the BGB here. Familiarise yourself with your rights</a>.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Zweckentfremdung - the Airbnb law</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Since August 2018 in Berlin, landlords need a special permission to rent more than half of their flat for short-term (e.g. holiday) rentals, or to leave their flat empty of tenants. The law requires almost all flats that are not occupied by their owners to be made available on the rental market under the terms of normal private tenancy agreements.
+      Landlords who have a series of short-term tenants, at unusually high prices with non-standard agreements, or landlords who keep their flats empty and off the market, are misusing their property under the terms of this law.
+      If you get to know of an apartment that is being misused in this way, <a href="https://service.berlin.de/dienstleistung/326217/">you can report it as a Zweckentfremdung here</a>.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Vorübergehende Gebrauch</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Apparently in response to the Zweckentfremdung law, some landlords (and entire portals like <a href="https://wunderflats.com">Wunderflats</a>) attempt to offer time-limited rentals under the terms of <a href="https://www.gesetze-im-internet.de/bgb/__549.html">BGB §549 2.1</a>, which creates special exceptions to the rental law for people whose need of housing is "temporary".
+      If you are not an Olympic athlete in town for the Games, or an architect from Frankfurt finishing up a building project in Berlin - if you have no other place to live, if you plan to Anmeld, if you want to move your "Lebensmittelpunkt" to your new flat - your need is not temporary. BGB §549 2.1 does not apply to you and it should not be referred to in your rental contract.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Mietervereine</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>When you have finally signed your contract, paid your deposit, and got your keys, your journey may not be over. There might be something wrong with the flat, the Hausverwaltung might be awful, the landlord might want to evict you after a year so they can raise the rents. The Mietervereine in Berlin are non-profit organisations whose members are all tenants in the city,
+      that offer qualified legal advice and support for tenants. Some of the Vereine even offer legal insurance as part of the membership. Whether or not you end up needing this support it makes sense to support one of these organisations, as they are busy working to keep landlords in check. Berlin is served by four different Vereine - <a href="http://www.mietervereine-in-berlin.de/">you can find an overview of them here</a>.</p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,4 @@
+cron:
+- description: "Hunt for flats"
+  url: /hunt
+  schedule: every 10 minutes synchronized

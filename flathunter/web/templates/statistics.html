@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Statistics
+{% endblock %}
+
+{% block content %}
+<style>
+  .graph {
+    width: 800px;
+    height: 500px;
+    background-color: white;
+  }
+  
+  h3 {
+    color: white;
+    text-align: center;
+  }
+</style>
+<div class="container-fluid">
+  <div class="row my-2">
+    <div class="mx-auto">
+      <h3>Price development by week</h3>
+      <div id="graph_price_development" class="graph">
+      </div>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="mx-auto">
+      <h3>Flats posted by day</h3>
+      <div id="graph_flats_by_day" class="graph">
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var exposes = {{ exposes|safe }};
+
+    function day_diff(date_string) {
+      return (new Date() - new Date(date_string))/(24 * 60 * 60 * 1000)
+    }
+    
+    function week_bucket(date_string) {
+      return Math.floor(day_diff(date_string) / 7);
+    }
+    
+    function week_start_date(week) {
+      return new Date(new Date() - ((week + 1) * 24 * 7 * 60 * 60 * 1000)).toISOString().slice(0, 10);
+    }
+    
+    function series_price_per_qm_by_week() {
+      const series = {};
+      for (expose of exposes) {
+        const week = week_bucket(expose.created_at)
+        if (series[week] == undefined) {
+          series[week] = []
+        }
+        if (expose.price < 4000 && expose.price > 100 && expose.size < 300 && expose.size > 10) {
+          series[week].push(expose.price / expose.size);
+        }
+      }
+      const data = []
+      for (week of Object.keys(series)) {
+        data.push({
+          x: series[week],
+          type: 'box',
+          name: week_start_date(week)
+        })
+      }
+      return data;
+    }
+
+    function series_flats_by_day() {
+      const series = [];
+      for (expose of exposes) {
+        const day = new Date(expose.created_at).getDay();
+        if (series[day] == undefined) {
+          series[day] = 0;
+        }
+        series[day]++;
+      }
+      return [{
+        x: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
+        y: series,
+        type: 'bar'
+      }]
+    }
+
+		window.onload = function() {
+			Plotly.newPlot(document.getElementById('graph_price_development'),
+        series_price_per_qm_by_week(), {
+          margin: { t: 0 },
+          xaxis: {
+            title: 'Price per m^2'
+          },
+          yaxis: {
+            title: 'Week beginning',
+            type: 'date',
+            tickformat: '%d/%m'
+          }
+        });
+
+      Plotly.newPlot(document.getElementById('graph_flats_by_day'),
+        series_flats_by_day(), {
+          margin: { t: 0 },
+          xaxis: {
+            title: 'Day of week'
+          },
+          yaxis: {
+            title: 'Number of flats'
+          }
+        });
+		};
+</script>
+{% endblock %}

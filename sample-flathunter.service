@@ -1,0 +1,12 @@
+[Unit]
+Description=Flathunter Python Script
+After=network.target nss-lookup.target
+[Service]
+ExecStart=/home/flathunter/.local/bin/pipenv run python flathunt.py
+WorkingDirectory=/opt/flathunter
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=flathunter
+User=flathunter
+[Install]
+WantedBy=multi-user.target

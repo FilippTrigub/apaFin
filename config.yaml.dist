@@ -1,0 +1,190 @@
+---
+# Enable verbose mode (print DEBUG log messages)
+# verbose: true
+
+# Should the bot endlessly looop through the URLs?
+# Between each loop it waits for <sleeping_time> seconds.
+# Note that Ebay will (temporarily) block your IP if you
+# poll too often - don't lower this below 600 seconds if you
+# are crawling Ebay.
+loop:
+    active: yes
+    sleeping_time: 600
+
+# Location of the Database to store already seen offerings
+# Defaults to the current directory
+#database_location: /path/to/database
+
+# List the URLs containing your filter properties below.
+# Currently supported services: www.immobilienscout24.de,
+# www.immowelt.de, www.wg-gesucht.de, and www.ebay-kleinanzeigen.de.
+# List the URLs in the following format:
+# urls:
+# 	- https://www.immobilienscout24.de/Suche/...
+# 	- https://www.wg-gesucht.de/...
+urls:
+
+# Define filters to exclude flats that don't meet your critera.
+# Supported filters include 'max_rooms', 'min_rooms', 'max_size', 'min_size',
+#   'max_price', 'min_price', and 'excluded_titles'.
+#
+# 'excluded_titles' takes a list of regex patterns that match against
+# the title of the flat. Any matching titles will be excluded.
+# More to Python regex here: https://docs.python.org/3/library/re.html
+#
+# Example:
+# filters:
+#   excluded_titles:
+#     - "wg"
+#     - "zwischenmiete"
+#   min_price: 700
+#   max_price: 1000
+#   min_size: 50
+#   max_size: 80
+#   max_price_per_square: 1000
+filters:
+
+# There are often city districts in the address which
+# Google Maps does not like. Use this blacklist to remove
+# districts from the search.
+blacklist:
+  - Innenstadt
+
+# If an expose includes an address, the bot is capable of
+# displaying the distance and time to travel (duration) to
+# some configured other addresses, for specific kinds of
+# travel.
+#  
+# Available kinds of travel ('gm_id') can be found in the
+# Google Maps API documentation, but basically there are:
+# 	- "bicycling"
+#	- "transit" (public transport)
+#	- "driving"
+#   - "walking"
+# 
+# The example configuration below includes a place for
+# "John", located at the main train station of munich.
+# Two kinds of travel (bicycle and transit) are requested,
+# each with a different label. Furthermore a place for
+# "Jane" is included, located at the given destination and
+# with the same kinds of travel.
+durations:
+    - name: John
+      destination: Hauptbahnhof, München
+      modes: 
+          - gm_id: transit
+            title: "Öff."
+          - gm_id: bicycling
+            title: "Rad"
+    - name: Jane
+      destination: Karlsplatz, München
+      modes: 
+          - gm_id: transit
+            title: "Öff."
+          - gm_id: driving
+            title: "Auto"
+
+# Multiline message (yes, the | is supposed to be there), 
+# to format the message received from the Telegram bot. 
+# 
+# Available placeholders:
+# 	- {title}: The title of the expose
+#	- {rooms}: Number of rooms
+#	- {price}: Price for the flat
+# 	- {durations}: Durations calculated by GMaps, see above
+#	- {url}: URL to the expose
+message: |
+    {title}
+    Zimmer: {rooms}
+    Größe: {size}
+    Preis: {price}
+    Ort: {address}
+
+    {url}
+
+# Calculating durations requires access to the Google Maps API. 
+# Below you can configure the URL to access the API, with placeholders.
+# The URL should most probably just kept like that. 
+# To use the Google Maps API, an API key is required. You can obtain one
+# without costs from the Google App Console (just google for it).
+# Additionally, to enable the API calls in the code, set the 'enable' key to True
+google_maps_api:
+    key: YOUR_API_KEY
+    url: https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin}&destinations={dest}&mode={mode}&sensor=true&key={key}&arrival_time={arrival}
+    enable: False
+
+# If you are planning to scrape immoscout24.de, the bot will need 
+# to circumvent the sites captcha protection by using a captcha 
+# solving service. Register at either imagetypers or 2captcha 
+# (the former is prefered), desposit some funds, uncomment the 
+# corresponding lines below and replace your API key/token.
+# Use driver_arguments to provide options for Chrome WebDriver.
+# captcha:
+#       imagetyperz:
+#             token: alskdjaskldjfklj
+#       2captcha:
+#             api_key: alskdjaskldjfklj
+#       driver_arguments:
+#         - "--headless"
+
+# You can select whether to be notified by telegram, apprise or a mattermost
+# webhook. For all notifiers selected here a configuration must be provided
+# below.
+# notifiers:
+#   - telegram
+#   - apprise
+#   - mattermost
+notifiers:
+    - telegram
+    - mattermost
+    - apprise
+
+# Sending messages using Telegram requires a Telegram Bot configured. 
+# Telegram.org offers a good documentation about how to create a bot.
+# Once you read it, will make sense. Still: bot_token should hold the
+# access token of your bot and receiver_ids should list the client ids
+# of receivers. Note that those receivers are required to already have
+# started a conversation with your bot. 
+#
+# telegram:
+#   bot_token: 160165XXXXXXX....
+#   notify_with_images: true
+#   receiver_ids:
+#       - 12345....
+#       - 67890....
+
+# Sending messages via mattermost requires a webhook url provided by a
+# mattermost server. You can find a description how to set up a webhook with
+# the official mattermost documentation:
+# https://docs.mattermost.com/developer/webhooks-incoming.html
+# mattermost:
+#   webhook_url: https://mattermost.example.com/signup_user_complete/?id=abcdef12356
+
+# Sending messages using Apprise requires an Apprise url.
+# Apprise allows to send notifications to a wide variety of services.
+# You can find a description how to set up an Apprise url with the official
+# documentation: https://github.com/caronc/apprise 
+#
+# apprise:
+#   - gotifys://...
+#   - mailto://..
+
+# If you are running the web interface, you can configure Login with Telegram support
+# Follow the instructions here to register your domain with the Telegram bot:
+# https://core.telegram.org/widgets/login
+#
+# website:
+#    bot_name: bot_name_xxx
+#    domain: flathunter.example.com
+#    session_key: SomeSecretValue
+#    listen:
+#      host: 127.0.0.1
+#      port: 8080
+
+# If you are deploying to google cloud,
+# uncomment this and set it to your project id. More info in the readme.
+# google_cloud_project_id: my-flathunters-project-id
+
+# For websites like idealista.it, there are anti-crawler measures that can be
+# circumvented using proxies.
+# use_proxy_list: True

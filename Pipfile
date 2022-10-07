@@ -1,0 +1,36 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+PyYAML = "*"
+requests = "*"
+urllib3 = "*"
+lxml = "*"
+coverage = "*"
+codecov = "*"
+requests-mock = "*"
+Flask = "*"
+Flask-API = "*"
+firebase-admin = "*"
+mock-firestore = "*"
+pytest-mock = "*"
+pytest = "*"
+pylint = "*"
+selenium = "*"
+random-user-agent = "*"
+jsonpath-ng = "*"
+backoff = "*"
+pytz = "*"
+beautifulsoup4 = "*"
+pylint-runner = "*"
+webdriver-manager = "*"
+apprise = "*"
+python-dotenv = "*"
+undetected-chromedriver = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3"

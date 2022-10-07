@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+About
+{% endblock %}
+
+{% block content %}
+<style>
+  div.row a {
+    color: cyan;
+  }
+
+  div.row a:visited {
+    color: cyan;
+  }
+</style>
+<div class="container">
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">What is Flathunter?</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Flathunter helps you find somewhere to live in Berlin, by periodically fetching apartment listings from the major property portals (ImmoScout, ImmoWelt, Ebay Kleinanzeigen and WG Gesucht) and sending the details of apartments that match your criteria to you in a Telegram message.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Why use Flathunter?</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Looking for an apartment in Berlin is brutal right now. An appartment listing goes up on one of the many property portals &mdash; over 600 apartments are posted every day &mdash; and within minutes of a post going up, hundreds of people have applied. The system privileges those who have the time (or the software skills) to constantly check all the listings on every site. Flathunter levels the playing field by notifying anyone with a smartphone as soon as an interesting flat becomes available.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">How do I use Flathunter?</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>Go to the <a href="/">homepage</a> and click 'Login with Telegram'. This will identify you to the system, and grant our Telegram bot permission to send you messages about interesting flats. Enter the details of your ideal flat into the form, and hit 'Set search critera' to restrict the notifications to the flats that meet your critera. If you don't want to receive Telegram messages any more, just hit 'Disable notifications'. That's it!</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">Who are Flathunters?</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p><a href="https://github.com/flathunters">Flathunters</a> is a distributed team of coders who have themselves been looking for flats in Germany. Anyone can join, and <a href="https://github.com/flathunters/flathunter">all the code is open source</a>. If you have a support request, a feature wish, or you want to help out with the development, head over to <a href="https://github.com/flathunters/flathunter">our Github page</a>.</p>
+    </div>
+  </div>
+
+  <div class="row text-white my-4">
+    <h2 class="mx-auto">What happens with my information?</h2>
+  </div>
+  <div class="row text-white my-2">
+    <div class="intro col-sm-9 mx-auto text-left">
+      <p>When you hit the 'Login with Telegram' button, we receive your Telegram username, first name, last name and <a href="https://telegram.org/blog/login">Telegram ID</a>. We store your Telegram ID, and we store your search preferences - we need that to send you messages about flats. Besides that, we don't store any information and we know nothing else about you.</p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -124,7 +124,7 @@ google_maps_api:
 # Use driver_arguments to provide options for Chrome WebDriver.
 captcha:
     imagetyperz:
-         token: E2D5BDC025AA44208DC22DFAA9526B09
+         token: FILL IN HERE
     driver_arguments:
      - "--headless"
 #    2captcha:
@@ -145,9 +145,9 @@ notifiers:
 # started a conversation with your bot. 
 #
 telegram:
-   bot_token: 5648920225:AAH3jqSkYXbNYb5gMIIh89RGeGRVcvdBENc
+   bot_token: FILL IN HERE
    receiver_ids:
-       - 388259993
+       - FILL IN HERE
 
 # Sending messages via mattermost requires a webhook url provided by a
 # mattermost server. You can find a description how to set up a webhook with
@@ -180,16 +180,16 @@ telegram:
 auto_submit:
   enable: False
   login_immoscout:
-    username: 'philtrigu@gmail.com'
-    password: 'Kw*2I10l^u8exE'
+    username: 'FILL IN HERE'
+    password: 'FILL IN HERE'
   login_immowelt:
-    username: 'philtrigu@gmail.com'
-    password: 'LhpH$&yAqLEBHT9y'
+    username: 'FILL IN HERE'
+    password: 'FILL IN HERE'
   login_ebay:
-    username: 'philtrigu@gmail.com'
-    password: 's87I%%lu@hijUELR'
+    username: 'FILL IN HERE'
+    password: 'FILL IN HERE'
   login_wggesucht:
-    username: 'philtrigu@gmail.com'
-    password: 'a$GM375RnTLjJx5E'
+    username: 'FILL IN HERE'
+    password: 'FILL IN HERE'
   contact_text_file: 'contact_text.txt'
 

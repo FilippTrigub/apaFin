@@ -153,7 +153,6 @@ class CrawlEbayKleinanzeigen(Crawler):
         return chrome_options
 
     def submit_application(self, entry):
-        pass
         contact_text_with_salutation = 'Guten Tag,\n\n' + self.contact_text
 
         # change the location of the driver on your machine
@@ -161,49 +160,42 @@ class CrawlEbayKleinanzeigen(Crawler):
 
         try:
             self.driver.get(entry['url'])
-            # click away conditions
+            self.click_away_conditions()
+            # log in only required at beginning
             try:
-                accept_button = self.driver.find_element(By.ID, 'gdpr-banner-accept')
-                self.driver.execute_script("arguments[0].click();", accept_button)
+                # log in button
+                self.find_and_click(element="viewad-contact-button-login-modal", method=By.ID)
+
+                # Captchas might appear here.
+                self.click_away_conditions()
+                try:
+                    self.try_solving_capthca(checkbox=self.checkbox)
+                except (TimeoutException, CaptchaNotFound):
+                    pass
+
+                # username and password, then click log in
+                self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input', input_value=self.auto_submit_config['login_ebay']['username'])
+                self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input', input_value=self.auto_submit_config['login_ebay']['password'])
+                self.find_and_click('/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
             except NoSuchElementException:
                 pass
 
-            contact_button = self.driver.find_element(By.ID, "viewad-contact-button-login-modal")
-            contact_button.click()
-            # self.driver.execute_script("arguments[0].click();", contact_button)  # todo page not loading
+            self.find_and_fill(element='#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea', method=By.CSS_SELECTOR, input_value=contact_text_with_salutation)
 
-            # log in
-            # Captchas might appear here.
-            try:
-                self.try_solving_capthca(checkbox=self.checkbox)
-            except (TimeoutException, CaptchaNotFound):
-                pass
+            self.find_and_click(element="#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button", method=By.CSS_SELECTOR)
 
-            email_field = self.driver.find_element(By.XPATH,
-                                                   '/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input')
-            email_field.clear()
-            email_field.send_keys(self.auto_submit_config['login_ebay']['username'])
-            password_field = self.driver.find_element(By.XPATH,
-                                                      '/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input')
-            password_field.clear()
-            password_field.send_keys(self.auto_submit_config['login_ebay']['password'])
-
-            login_button = self.driver.find_element(By.XPATH,
-                                                    '/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
-            login_button.click()
-            text_area = self.driver.find_element(By.CSS_SELECTOR,
-                                                 '#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea')
-            text_area.clear()
-            text_area.send_keys(contact_text_with_salutation)
-
-            submit_button = self.driver.find_element(By.CSS_SELECTOR,
-                                                     "#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button")
-            self.driver.execute_script("arguments[0].click();", submit_button)
         except NoSuchElementException as e:
             print("Unable to find HTML element")
             print("".join(traceback.TracebackException.from_exception(e).format()))
 
-
+    def click_away_conditions(self):
+        # click away conditions
+        try:
+            self.find_and_click(element='gdpr-banner-accept', method=By.ID)
+            self.find_and_click(element='#gdpr-banner-accept', method=By.CSS_SELECTOR)
+            self.find_and_click(element='/html/body/div[2]/div/div/div/div/div[3]/button[2]')
+        except NoSuchElementException:
+            pass
 # Traceback (most recent call last):
 #   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\hunter.py", line 27, in try_crawl
 #     return searcher.crawl(url, max_pages)

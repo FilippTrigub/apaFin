@@ -14,6 +14,7 @@ from flathunter.captcha.captcha_solver import (
     RecaptchaResponse,
 )
 
+
 class ImageTyperzSolver(CaptchaSolver):
     """Implementation of Captcha solver for ImageTyperz"""
 
@@ -43,21 +44,20 @@ class ImageTyperzSolver(CaptchaSolver):
             parts = result.split(";;;")
             return GeetestResponse(parts[0], parts[1], parts[2])
 
-
-    def solve_recaptcha(self, google_site_key: str, page_url: str) -> RecaptchaResponse:
+    def solve_recaptcha(self, google_site_key: str, page_url: str, recaptchatype: int = 1) -> RecaptchaResponse:
         logger.info("Trying to solve recaptcha.")
         params = {
             "action": "UPLOADCAPTCHA",
             "pageurl": page_url,
             "googlekey": google_site_key,
             "token": self.api_key,
+            "recaptchatype": recaptchatype
         }
         captcha_id = self.__submit_imagetyperz_request(
             "http://www.captchatypers.com/captchaapi/UploadRecaptchaToken.ashx",
-             params
+            params
         )
         return RecaptchaResponse(self.__retrieve_imagetyperz_result(captcha_id))
-
 
     @backoff.on_exception(**CaptchaSolver.backoff_options)
     def __submit_imagetyperz_request(self, submit_url: str, params: Dict[str, str]) -> str:
@@ -67,9 +67,7 @@ class ImageTyperzSolver(CaptchaSolver):
         if "error" in submit_response.text.lower():
             raise requests.HTTPError(response=submit_response)
 
-
         return submit_response.text
-
 
     @backoff.on_exception(**CaptchaSolver.backoff_options)
     def __retrieve_imagetyperz_result(self, captcha_id: str):

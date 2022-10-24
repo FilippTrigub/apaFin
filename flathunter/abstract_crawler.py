@@ -295,7 +295,7 @@ class Crawler:
             .find_element(By.CLASS_NAME, "g-recaptcha") \
             .get_attribute("data-sitekey")
 
-        try:
+        try: #todo does not work for invisible recaptcha v2
             captcha_result = self.captcha_solver.solve_recaptcha(
                 google_site_key,
                 driver.current_url,

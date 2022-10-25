@@ -150,7 +150,6 @@ class CrawlEbayKleinanzeigen(Crawler):
         if driver_arguments is not None:
             for driver_argument in driver_arguments:
                 chrome_options.add_argument(driver_argument)
-        # chrome_options.add_experimental_option('excludeSwitches', ['enable-automation']) todo
         return chrome_options
 
     def submit_application(self, entry):

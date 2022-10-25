@@ -117,9 +117,6 @@ class Crawler:
             return self.get_soup_with_proxy(url)
         if driver is not None:
             driver.get(url)
-            # time.sleep(30)
-            # driver.refresh()
-            # todo replace old code
             if re.search("initGeetest", driver.page_source):
                 try:
                     self.resolve_geetest(driver)
@@ -295,7 +292,7 @@ class Crawler:
             .find_element(By.CLASS_NAME, "g-recaptcha") \
             .get_attribute("data-sitekey")
 
-        try:  # todo does not work for invisible recaptcha v2
+        try:
             captcha_result = self.captcha_solver.solve_recaptcha(
                 google_site_key,
                 driver.current_url,
@@ -329,13 +326,8 @@ class Crawler:
             iframe_present = self._wait_for_iframe(
                 driver,
                 element_selector="iframe[src^='https://www.google.com/recaptcha/api2/bframe?']")
-            # iframe_present = self._wait_for_iframe(
-            #     driver,
-            #     element_selector="iframe[src^='https://www.google.com/recaptcha/api2/bframe?']") todo this worked
             if iframe_present:
                 self.solve_defaut_recaptcha(driver)
-            # if iframe_present:
-            #     self.solve_defaut_recaptcha(driver, recaptchatype=2)
             WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked"))
             )
@@ -357,10 +349,6 @@ class Crawler:
         iframe = None
         if not element_selector:
             element_selector = "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']"
-        # todo
-        # element_selectors = ["iframe[src^='https://www.google.com/recaptcha/api2/bframe?']",
-        #                      "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']"]
-        # element_selectors = ["iframe[src^='https://www.google.com/recaptcha/api2/bframe?']"]
         while iframe is None:
             try:
                 iframe = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
@@ -394,11 +382,7 @@ class Crawler:
             except CaptchaUnsolvableError:
                 pass
         elif re.search("g-recaptcha", self.driver.page_source):
-            # try:
             self.resolve_recaptcha(self.driver, checkbox, self.afterlogin_string)
-            # except CaptchaUnsolvableError:
-            #     pass  # todo raise something
-            #
         else:
             raise CaptchaNotFound
 

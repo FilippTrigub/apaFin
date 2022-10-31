@@ -9,7 +9,7 @@ from selenium.common import ElementNotInteractableException, NoSuchElementExcept
 from selenium.webdriver.common.by import By
 
 from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler
+from flathunter.abstract_crawler import Crawler, ApplicationUnsuccesfulException
 from flathunter.string_utils import remove_prefix
 
 
@@ -239,3 +239,4 @@ class CrawlWgGesucht(Crawler):
         except NoSuchElementException as e:
             print("Unable to find HTML element")
             print("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException

@@ -217,8 +217,9 @@ class Crawler:
             for entry in entries:
                 try:
                     self.submit_application(entry)
-                except NoSuchElementException:
-                    pass
+                    entry.update({'applied': 'Yes'})
+                except (Exception, ApplicationUnsuccesfulException):
+                    entry.update({'applied': 'No'})
 
     def apartment_fits(self, entry):
         return True
@@ -321,20 +322,35 @@ class Crawler:
     def _clickcaptcha(self, driver):
         driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe"))
         self.find_and_click(element="recaptcha-checkbox-checkmark", method=By.CLASS_NAME)
-        driver.switch_to.default_content()
-        try:
-            iframe_present = self._wait_for_iframe(
-                driver,
-                element_selector="iframe[src^='https://www.google.com/recaptcha/api2/bframe?']")
-            if iframe_present:
-                self.solve_defaut_recaptcha(driver)
-            WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked"))
-            )
-        except (selenium.common.exceptions.TimeoutException, selenium.common.exceptions.InvalidSelectorException):
-            print("Selenium.Timeoutexception")
+        # todo if click was enough, app should pass here
+        if not self.click_was_enough(driver):
+            driver.switch_to.default_content()
+            driver.refresh()
+            raise ApplicationUnsuccesfulException
+            # driver.switch_to.default_content()
+            # # todo need to click on captcha to prolong its visibility and also find a way to submit result
+            # try:
+            #     iframe_present = self._wait_for_iframe(
+            #         driver,
+            #         element_selector="iframe[src^='https://www.google.com/recaptcha/api2/bframe?']")
+            #     if iframe_present:
+            #         self.solve_defaut_recaptcha(driver)
+            #     WebDriverWait(driver, 30).until(
+            #         EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked"))
+            #     )
+            # except (selenium.common.exceptions.TimeoutException, selenium.common.exceptions.InvalidSelectorException):
+            #     print("Solving ebay captcha not successful.")
+            #     raise ApplicationUnsuccesfulException
         self._wait_for_captcha_resolution(driver)
         driver.switch_to.default_content()
+
+    def click_was_enough(self, driver):
+        try:
+            WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked")))
+            return True
+        except selenium.common.exceptions.TimeoutException:
+            return False
 
     def _wait_for_captcha_resolution(self, driver, afterlogin_string=""):
         xpath_string = f"//*[contains(text(), '{afterlogin_string}')]"
@@ -342,7 +358,7 @@ class Crawler:
             WebDriverWait(driver, 120) \
                 .until(EC.visibility_of_element_located((By.XPATH, xpath_string)))
         except selenium.common.exceptions.TimeoutException:
-            print("Selenium.Timeoutexception")
+            print("No Captcha solution found.")
 
     def _wait_for_iframe(self, driver: selenium.webdriver.Chrome, element_selector=None):
         """Wait for iFrame to appear"""
@@ -414,4 +430,8 @@ class Crawler:
 
 
 class CaptchaNotFound(Exception):
+    pass
+
+
+class ApplicationUnsuccesfulException(Exception):
     pass

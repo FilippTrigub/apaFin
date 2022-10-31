@@ -98,10 +98,11 @@ filters:
 #	- {url}: URL to the expose
 message: |
     {title}
-    Zimmer: {rooms}
-    Größe: {size}
-    Preis: {price}
-    Ort: {address}
+    Applied: {applied}
+    Rooms: {rooms}
+    Size: {size}
+    Price: {price}
+    Location: {address}
 
     {url}
 

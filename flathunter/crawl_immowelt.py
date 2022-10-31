@@ -9,7 +9,7 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound
+from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
 
 
 class CrawlImmowelt(Crawler):
@@ -163,3 +163,4 @@ class CrawlImmowelt(Crawler):
         except NoSuchElementException as e:
             print("Unable to find HTML element")
             print("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException

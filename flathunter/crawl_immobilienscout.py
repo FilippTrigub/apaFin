@@ -9,7 +9,7 @@ from selenium.common.exceptions import JavascriptException, NoSuchElementExcepti
     TimeoutException
 from selenium.webdriver.common.by import By
 
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound
+from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
 from flathunter.captcha.captcha_solver import CaptchaUnsolvableError
 from flathunter.logging import logger
 
@@ -321,3 +321,4 @@ class CrawlImmobilienscout(Crawler):
         except NoSuchElementException as e:
             print("Unable to find HTML element")
             print("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException

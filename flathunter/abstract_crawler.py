@@ -428,6 +428,9 @@ class Crawler:
         with open(file=os.path.join(os.getcwd(), file_name), encoding='utf-8') as file:
             return file.read()
 
+    def click_away_conditions(self):
+        NotImplementedError
+
 
 class CaptchaNotFound(Exception):
     pass

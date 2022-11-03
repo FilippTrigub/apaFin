@@ -250,7 +250,8 @@ class CrawlImmobilienscout(Crawler):
         try:
             close_button = self.driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div/div[2]/button')
             self.driver.execute_script("arguments[0].click();", close_button)
-            login_button = self.driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/header/div/div[3]/div/ul/li/div/div/div/div[1]/a')
+            login_button = self.driver.find_element(By.XPATH,
+                                                    '/html/body/div[2]/div[2]/div/header/div/div[3]/div/ul/li/div/div/div/div[1]/a')
             self.driver.execute_script("arguments[0].click();", login_button)
             username_area = self.driver.find_element(By.ID, 'username')
             username_area.send_keys('philtrigu@gmail.com')
@@ -298,27 +299,22 @@ class CrawlImmobilienscout(Crawler):
             else:
                 greeting = "Guten Tag,\n\n"
             contact_text_with_salutation = greeting + self.contact_text
-            # last_name = self.driver.find_element(By.ID, 'contactForm-lastName')
-            # last_name.send_keys("Trigub")
-            # first_name = self.driver.find_element(By.ID, 'contactForm-firstName')
-            # first_name.send_keys("Filipp")
-            # email = self.driver.find_element(By.ID, 'contactForm-emailAddress')
-            # email.send_keys("filipp.trigub@gmail.com")
-            # street = self.driver.find_element(By.ID, 'contactForm-street')
-            # street.send_keys("Schildhornstr")
-            # house = self.driver.find_element(By.ID, 'contactForm-houseNumber')
-            # house.send_keys("99")
-            # post = self.driver.find_element(By.ID, 'contactForm-postcode')
-            # post.send_keys("12163")
-            # city = self.driver.find_element(By.ID, 'contactForm-city')
-            # city.send_keys("Berlin")
             text_area = self.driver.find_element(By.ID, 'contactForm-Message')
             text_area.clear()
             text_area.send_keys(contact_text_with_salutation)
-            submit_button = self.driver.find_element(By.XPATH,
-                                                     '//*[@id="is24-expose-modal"]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[5]/div')
-            submit_button.click()
+            self.check_for_optional_fields()
+
+            self.find_and_click(
+                '//*[@id="is24-expose-modal"]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[5]/div')
         except NoSuchElementException as e:
             print("Unable to find HTML element")
             print("".join(traceback.TracebackException.from_exception(e).format()))
             raise ApplicationUnsuccesfulException
+
+    def check_for_optional_fields(self):
+        try:
+            "Haben Sie Haustiere?"
+            self.find_and_click(
+                '/html/body/div[5]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[3]/div/div[5]/div/div/div[2]/div/div/div[7]/ul/li[3]')
+        except NoSuchElementException:
+            pass

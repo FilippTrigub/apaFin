@@ -153,45 +153,44 @@ class CrawlEbayKleinanzeigen(Crawler):
         return chrome_options
 
     def submit_application(self, entry):
-        raise ApplicationUnsuccesfulException
-        # contact_text_with_salutation = 'Guten Tag,\n\n' + self.contact_text
-        #
-        # # change the location of the driver on your machine
-        # self.driver.implicitly_wait(10)
-        #
-        # try:
-        #     self.driver.get(entry['url'])
-        #     self.click_away_conditions()
-        #     # log in only required at beginning
-        #     try:
-        #         # log in button
-        #         self.find_and_click(element="viewad-contact-button-login-modal", method=By.ID)
-        #
-        #         # Captchas might appear here.
-        #         self.click_away_conditions()
-        #         try:
-        #             # self.try_solving_capthca(checkbox=False)
-        #             self.try_solving_capthca(checkbox=self.checkbox)
-        #         except (TimeoutException, CaptchaNotFound):
-        #             pass
-        #
-        #         # username and password, then click log in
-        #         self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input', input_value=self.auto_submit_config['login_ebay']['username'])
-        #         self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input', input_value=self.auto_submit_config['login_ebay']['password'])
-        #         self.find_and_click('/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
-        #     except NoSuchElementException:
-        #         pass
-        #
-        #     print('captcha done')
-        #
-        #     # self.find_and_fill(element='#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea', method=By.CSS_SELECTOR, input_value=contact_text_with_salutation)
-        #     #
-        #     # self.find_and_click(element="#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button", method=By.CSS_SELECTOR)
-        #
-        # except NoSuchElementException as e:
-        #     print("Unable to find HTML element")
-        #     print("".join(traceback.TracebackException.from_exception(e).format()))
-        #     raise ApplicationUnsuccesfulException
+        contact_text_with_salutation = 'Guten Tag,\n\n' + self.contact_text
+
+        # change the location of the driver on your machine
+        self.driver.implicitly_wait(10)
+
+        try:
+            self.driver.get(entry['url'])
+            self.click_away_conditions()
+            # log in only required at beginning
+            try:
+                # log in button
+                self.find_and_click(element="viewad-contact-button-login-modal", method=By.ID)
+
+                # Captchas might appear here.
+                self.click_away_conditions()
+                try:
+                    # self.try_solving_capthca(checkbox=False)
+                    self.try_solving_capthca(checkbox=self.checkbox)
+                except (TimeoutException, CaptchaNotFound):
+                    pass
+
+                # username and password, then click log in
+                self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input', input_value=self.auto_submit_config['login_ebay']['username'])
+                self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input', input_value=self.auto_submit_config['login_ebay']['password'])
+                self.find_and_click('/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
+            except NoSuchElementException:
+                pass
+
+            print('captcha done')
+
+            self.find_and_fill(element='#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea', method=By.CSS_SELECTOR, input_value=contact_text_with_salutation)
+
+            self.find_and_click(element="#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button", method=By.CSS_SELECTOR)
+
+        except NoSuchElementException as e:
+            print("Unable to find HTML element")
+            print("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException
 
     def click_away_conditions(self):
         # click away conditions

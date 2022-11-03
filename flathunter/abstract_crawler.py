@@ -216,9 +216,12 @@ class Crawler:
         if self.AUTO_SUBMIT:
             for entry in entries:
                 try:
+                    print(f"Attempt automatic application for {entry['url']}")
                     self.submit_application(entry)
+                    print('Success')
                     entry.update({'applied': 'Yes'})
                 except (Exception, ApplicationUnsuccesfulException):
+                    print('Failure')
                     entry.update({'applied': 'No'})
 
     def apartment_fits(self, entry):

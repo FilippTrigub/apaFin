@@ -151,9 +151,9 @@ class CrawlWgGesucht(Crawler):
             # log in on first connect
             try:
                 try:
-                    self.find_and_click("//*[contains(text(), 'Login')]")
-                except ElementNotInteractableException:
                     self.find_and_click("//*[contains(text(), 'loggen')]")
+                except ElementNotInteractableException:
+                    self.find_and_click("//*[contains(text(), 'Login')]")
                 self.find_and_fill(element='login_email_username',
                                    input_value=self.auto_submit_config['login_wggesucht']['username'], method=By.ID)
                 self.find_and_fill(element='login_password',

@@ -243,8 +243,9 @@ class CrawlImmobilienscout(Crawler):
         return entries
 
     def submit_application(self, entry):
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
         self.driver.get(f'https://www.immobilienscout24.de/{entry["id"]}#/basicContact/email')
+        self.click_away_conditions()
 
         # Case 1: Some offers are for premium members only. In this case, click close, log in, get contact page again.
         try:
@@ -316,5 +317,11 @@ class CrawlImmobilienscout(Crawler):
             "Haben Sie Haustiere?"
             self.find_and_click(
                 '/html/body/div[5]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[3]/div/div[5]/div/div/div[2]/div/div/div[7]/ul/li[3]')
+        except NoSuchElementException:
+            pass
+
+    def click_away_conditions(self):
+        try:
+            self.find_and_click('/html/body/div[10]//div/div/div/div/div[2]/div/div[2]/div/div/div/button[2]')
         except NoSuchElementException:
             pass

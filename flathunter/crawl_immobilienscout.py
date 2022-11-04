@@ -291,7 +291,10 @@ class CrawlImmobilienscout(Crawler):
         try:
             title = self.driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div/div/div[1]/h4')
             title_words = title.text.split(' ')
+        except NoSuchElementException:
+            title_words = ''
 
+        try:
             if 'Herr' in title_words and len(title_words) == title_words.index('Herr') + 2:
                 greeting = f"Guten Tag Herr {title_words[title_words.index('Herr') + 1]},\n\n"
             elif 'Frau' in title_words and len(title_words) == title_words.index('Frau') + 2:

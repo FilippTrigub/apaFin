@@ -143,7 +143,7 @@ class CrawlWgGesucht(Crawler):
     def submit_application(self, entry):
         # todo does not work on 2nd entry
         # change the location of the driver on your machine
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
         try:
             self.driver.get('https://www.wg-gesucht.de/nachricht-senden/' + entry['url'].split('/')[-1])
             self.click_away_conditions()
@@ -152,7 +152,7 @@ class CrawlWgGesucht(Crawler):
             try:
                 try:
                     self.find_and_click("//*[contains(text(), 'loggen')]")
-                except ElementNotInteractableException:
+                except (NoSuchElementException, ElementNotInteractableException):
                     self.find_and_click("//*[contains(text(), 'Login')]")
                 self.find_and_fill(element='login_email_username',
                                    input_value=self.auto_submit_config['login_wggesucht']['username'], method=By.ID)
@@ -163,23 +163,27 @@ class CrawlWgGesucht(Crawler):
             except NoSuchElementException:
                 pass
 
-            se_button1 = self.driver.find_elements(By.ID, 'sicherheit_bestaetigung')
-            timestamp = self.driver.find_elements(By.ID, 'time_stamp')
-            if (len(se_button1) < 1 or len(timestamp) != 0):
-                print("Already sent message to this offer...")
+            # if already contacted, break here
+            time.sleep(5)
+            if self.driver.page_source.find(self.contact_text[-10:]) != -1:
                 return 0
-            else:
-                se_button1[0].click()
+
+            try:
+                # wg gesucht shows warning message at times, click away
+                self.find_and_click(element='sicherheit_bestaetigung', method=By.ID)
+            except NoSuchElementException:
+                pass
 
             # title element may vary in position
+            title_words = ''
             for i in [3, 4, 5]:
                 try:
                     title = self.driver.find_element(By.XPATH,
                                                      f'/html/body/div[3]/div[1]/div[3]/div[1]/div[1]/div[{i}]/div[1]/label/b')
+                    title_words = title.text[:-1].split(' ')
                     break
                 except NoSuchElementException:
                     pass
-            title_words = title.text[:-1].split(' ')
 
             if 'Herr' in title_words and len(title_words) == title_words.index('Herr') + 2:
                 greeting = f"Guten Tag Herr {title_words[title_words.index('Herr') + 1]},\n\n"

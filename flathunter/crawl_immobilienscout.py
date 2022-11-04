@@ -280,8 +280,7 @@ class CrawlImmobilienscout(Crawler):
             submit_password_button = self.driver.find_element(By.XPATH, '/html/body/div[1]/div/form/button')
             submit_password_button.click()
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            pass
 
         # Captchas might appear here.
         try:

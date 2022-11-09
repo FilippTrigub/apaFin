@@ -178,22 +178,24 @@ class CrawlEbayKleinanzeigen(Crawler):
                 self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input', input_value=self.auto_submit_config['login_ebay']['username'])
                 self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input', input_value=self.auto_submit_config['login_ebay']['password'])
                 self.find_and_click('/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
+                logger.info('Login successful')
             except NoSuchElementException:
                 pass
 
-            print('captcha done')
+            logger.info('captcha done')
 
             self.find_and_fill(element='#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea', method=By.CSS_SELECTOR, input_value=contact_text_with_salutation)
 
             self.find_and_click(element="#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button", method=By.CSS_SELECTOR)
 
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.debug("Unable to find HTML element")
+            logger.debug("".join(traceback.TracebackException.from_exception(e).format()))
             raise ApplicationUnsuccesfulException
 
     def click_away_conditions(self):
         # click away conditions
+        logger.info('Click away conditions')
         try:
             self.find_and_click(element='gdpr-banner-accept', method=By.ID)
             self.find_and_click(element='#gdpr-banner-accept', method=By.CSS_SELECTOR)

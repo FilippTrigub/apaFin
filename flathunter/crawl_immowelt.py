@@ -147,6 +147,7 @@ class CrawlImmowelt(Crawler):
             self.find_and_fill('/html/body/div[1]/div/div[1]/div/form[1]/div/div/div[1]/input', self.auto_submit_config['login_immowelt']['username'])
             self.find_and_fill('/html/body/div[1]/div/div[1]/div/form[1]/div/div/div[2]/div/input', self.auto_submit_config['login_immowelt']['password'])
             self.find_and_click('/html/body/div[1]/div/div[1]/div/form[1]/div/div/div[3]/input')
+            logger.info('Login successful')
             try:
                 self.try_solving_capthca(checkbox=True)
                 self.find_and_click('/html/body/div[1]/div/div[1]/div/form[1]/div/div/div[3]/input')
@@ -161,6 +162,6 @@ class CrawlImmowelt(Crawler):
             # submit
             self.find_and_click('/html/body/div[4]/div/div/div[2]/div/form/sd-button/button')
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.debug("Unable to find HTML element")
+            logger.debug("".join(traceback.TracebackException.from_exception(e).format()))
             raise ApplicationUnsuccesfulException

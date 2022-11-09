@@ -160,6 +160,7 @@ class CrawlWgGesucht(Crawler):
                                    input_value=self.auto_submit_config['login_wggesucht']['password'], method=By.ID)
 
                 self.find_and_click('login_submit', method=By.ID)
+                logger.info('Login successful')
             except NoSuchElementException:
                 pass
 
@@ -204,12 +205,13 @@ class CrawlWgGesucht(Crawler):
 
             self.find_and_click("//button[@data-ng-click='submit()' or contains(.,'Nachricht senden')]")
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.debug("Unable to find HTML element")
+            logger.debug("".join(traceback.TracebackException.from_exception(e).format()))
             raise ApplicationUnsuccesfulException
 
     def click_away_conditions(self):
         try:
             self.find_and_click('/html/body/div[2]/div[1]/div[2]/span[2]/a')
+            logger.info('Click away conditions')
         except NoSuchElementException:
             pass

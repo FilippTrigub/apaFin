@@ -216,12 +216,12 @@ class Crawler:
         if self.AUTO_SUBMIT:
             for entry in entries:
                 try:
-                    print(f"Attempt automatic application for {entry['url']}")
+                    logger.info(f"Attempt automatic application for {entry['url']}")
                     self.submit_application(entry)
-                    print('Success')
+                    logger.info('Success')
                     entry.update({'applied': 'Yes'})
                 except (Exception, ApplicationUnsuccesfulException):
-                    print('Failure')
+                    logger.info('Failure')
                     entry.update({'applied': 'No'})
 
     def apartment_fits(self, entry):
@@ -374,7 +374,7 @@ class Crawler:
                     (By.CSS_SELECTOR, element_selector)))
                 return iframe
             except (selenium.common.exceptions.TimeoutException, NoSuchElementException):
-                print("No iframe found, therefore no chaptcha verification necessary")
+                logger.info("No iframe found, therefore no chaptcha verification necessary")
                 return None
 
     def _wait_until_iframe_disappears(self, driver: selenium.webdriver.Chrome):
@@ -387,7 +387,7 @@ class Crawler:
                 (By.CSS_SELECTOR, element_selector)))
         except (selenium.common.exceptions.TimeoutException, NoSuchElementException):
             if len(element_selectors) == 0:
-                print("Element not found")
+                logger.info("Element not found")
 
     def get_driver(self):
         captcha_config = self.config.get('captcha')

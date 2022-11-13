@@ -4,12 +4,13 @@ import datetime
 import time
 import traceback
 
-from selenium.common import ElementNotInteractableException, NoSuchElementException, TimeoutException
+from selenium.common import ElementNotInteractableException, NoSuchElementException, TimeoutException, \
+    StaleElementReferenceException
 from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.common.by import By
 
 from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound
+from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
 from selenium.webdriver.chrome.options import Options
 
 
@@ -149,11 +150,9 @@ class CrawlEbayKleinanzeigen(Crawler):
         if driver_arguments is not None:
             for driver_argument in driver_arguments:
                 chrome_options.add_argument(driver_argument)
-        # chrome_options.add_experimental_option('excludeSwitches', ['enable-automation']) todo
         return chrome_options
 
     def submit_application(self, entry):
-        pass
         contact_text_with_salutation = 'Guten Tag,\n\n' + self.contact_text
 
         # change the location of the driver on your machine
@@ -161,99 +160,45 @@ class CrawlEbayKleinanzeigen(Crawler):
 
         try:
             self.driver.get(entry['url'])
-            # click away conditions
+            self.click_away_conditions()
+            # log in only required at beginning
             try:
-                accept_button = self.driver.find_element(By.ID, 'gdpr-banner-accept')
-                self.driver.execute_script("arguments[0].click();", accept_button)
+                # log in button
+                self.find_and_click(element="viewad-contact-button-login-modal", method=By.ID)
+
+                # Captchas might appear here.
+                self.click_away_conditions()
+                try:
+                    # self.try_solving_capthca(checkbox=False)
+                    self.try_solving_capthca(checkbox=self.checkbox)
+                except (TimeoutException, CaptchaNotFound):
+                    pass
+
+                # username and password, then click log in
+                self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input', input_value=self.auto_submit_config['login_ebay']['username'])
+                self.find_and_fill(element='/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input', input_value=self.auto_submit_config['login_ebay']['password'])
+                self.find_and_click('/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
+                logger.info('Login successful')
             except NoSuchElementException:
                 pass
 
-            contact_button = self.driver.find_element(By.ID, "viewad-contact-button-login-modal")
-            contact_button.click()
-            # self.driver.execute_script("arguments[0].click();", contact_button)  # todo page not loading
+            logger.info('captcha done')
 
-            # log in
-            # Captchas might appear here.
-            try:
-                self.try_solving_capthca(checkbox=self.checkbox)
-            except (TimeoutException, CaptchaNotFound):
-                pass
+            self.find_and_fill(element='#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea', method=By.CSS_SELECTOR, input_value=contact_text_with_salutation)
 
-            email_field = self.driver.find_element(By.XPATH,
-                                                   '/html/body/div[1]/div/div[3]/div[1]/form/div[1]/div/div/input')
-            email_field.clear()
-            email_field.send_keys(self.auto_submit_config['login_ebay']['username'])
-            password_field = self.driver.find_element(By.XPATH,
-                                                      '/html/body/div[1]/div/div[3]/div[1]/form/div[2]/div/div/input')
-            password_field.clear()
-            password_field.send_keys(self.auto_submit_config['login_ebay']['password'])
+            self.find_and_click(element="#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button", method=By.CSS_SELECTOR)
 
-            login_button = self.driver.find_element(By.XPATH,
-                                                    '/html/body/div[1]/div/div[3]/div[1]/form/div[4]/div/div/button')
-            login_button.click()
-            text_area = self.driver.find_element(By.CSS_SELECTOR,
-                                                 '#viewad-contact-form > fieldset > div:nth-child(1) > div > textarea')
-            text_area.clear()
-            text_area.send_keys(contact_text_with_salutation)
-
-            submit_button = self.driver.find_element(By.CSS_SELECTOR,
-                                                     "#viewad-contact-form > fieldset > div.formgroup.formgroup--btn-submit-right > button")
-            self.driver.execute_script("arguments[0].click();", submit_button)
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.debug("Unable to find HTML element")
+            logger.debug("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException
 
-
-# Traceback (most recent call last):
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\hunter.py", line 27, in try_crawl
-#     return searcher.crawl(url, max_pages)
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\abstract_crawler.py", line 232, in crawl
-#     return self.get_results(url, max_pages)
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\crawl_ebaykleinanzeigen.py", line 44, in get_results
-#     self.submit_to_entries(entries)
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\abstract_crawler.py", line 218, in submit_to_entries
-#     self.submit_application(entry)
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\crawl_ebaykleinanzeigen.py", line 196, in submit_application
-#     self.try_solving_capthca()
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\abstract_crawler.py", line 385, in try_solving_capthca
-#     self.resolve_recaptcha(self.driver, checkbox, self.afterlogin_string)
-#   File "C:\Users\philt\.virtualenvs\flathunter-BvXllqXQ\lib\site-packages\backoff\_sync.py", line 105, in retry
-#     ret = target(*args, **kwargs)
-#   File "C:\coding_challanges\apartmentFinder\flathunter\flathunter\flathunter\abstract_crawler.py", line 300, in resolve_recaptcha
-#     driver.execute_script(f'solvedCaptcha("{captcha_result}")')  # ????????????????????????
-#   File "C:\Users\philt\.virtualenvs\flathunter-BvXllqXQ\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 491, in execute_script
-#     return self.execute(command, {
-#   File "C:\Users\philt\.virtualenvs\flathunter-BvXllqXQ\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 428, in execute
-#     self.error_handler.check_response(response)
-#   File "C:\Users\philt\.virtualenvs\flathunter-BvXllqXQ\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 243, in check_response
-#     raise exception_class(message, screen, stacktrace)
-# selenium.common.exceptions.JavascriptException: Message: javascript error: solvedCaptcha is not defined
-#   (Session info: chrome=106.0.5249.62)
-# Stacktrace:
-# Backtrace:
-# 	Ordinal0 [0x00B01ED3+2236115]
-# 	Ordinal0 [0x00A992F1+1807089]
-# 	Ordinal0 [0x009A66FD+812797]
-# 	Ordinal0 [0x009A92B4+823988]
-# 	Ordinal0 [0x009A9165+823653]
-# 	Ordinal0 [0x009A9AF5+826101]
-# 	Ordinal0 [0x00A06452+1205330]
-# 	Ordinal0 [0x009F1A8C+1120908]
-# 	Ordinal0 [0x00A059E2+1202658]
-# 	Ordinal0 [0x009F18A6+1120422]
-# 	Ordinal0 [0x009CA73D+960317]
-# 	Ordinal0 [0x009CB71F+964383]
-# 	GetHandleVerifier [0x00DAE7E2+2743074]
-# 	GetHandleVerifier [0x00DA08D4+2685972]
-# 	GetHandleVerifier [0x00B92BAA+532202]
-# 	GetHandleVerifier [0x00B91990+527568]
-# 	Ordinal0 [0x00AA080C+1837068]
-# 	Ordinal0 [0x00AA4CD8+1854680]
-# 	Ordinal0 [0x00AA4DC5+1854917]
-# 	Ordinal0 [0x00AAED64+1895780]
-# 	BaseThreadInitThunk [0x75B26739+25]
-# 	RtlGetFullPathName_UEx [0x773F8FD2+1218]
-# 	RtlGetFullPathName_UEx [0x773F8F9D+1165]
-#
-#
-# Process finished with exit code -1
+    def click_away_conditions(self):
+        # click away conditions
+        logger.info('Click away conditions')
+        try:
+            self.find_and_click(element='gdpr-banner-accept', method=By.ID)
+            self.find_and_click(element='#gdpr-banner-accept', method=By.CSS_SELECTOR)
+            self.find_and_click(element='/html/body/div[2]/div/div/div/div/div[3]/button[2]')
+        except (NoSuchElementException, StaleElementReferenceException):
+            pass

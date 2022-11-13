@@ -156,6 +156,7 @@ class SenderTelegram(Processor, Notifier):
 
         return self.config.message_format().format(
             title=expose.get('title', 'N/A'),
+            applied=expose.get('applied', 'N/A'),
             rooms=expose.get('rooms', 'N/A'),
             size=expose.get('size', 'N/A'),
             price=expose.get('price', 'N/A'),

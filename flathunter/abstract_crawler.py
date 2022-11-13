@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import time
 from time import sleep
 import backoff
 import requests
@@ -9,7 +10,7 @@ import selenium
 import undetected_chromedriver.v2 as uc
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException, \
-    ElementNotInteractableException
+    ElementNotInteractableException, JavascriptException
 from bs4 import BeautifulSoup
 from random_user_agent.params import HardwareType, Popularity
 from random_user_agent.user_agent import UserAgent
@@ -117,9 +118,6 @@ class Crawler:
             return self.get_soup_with_proxy(url)
         if driver is not None:
             driver.get(url)
-            # time.sleep(30)
-            # driver.refresh()
-            # todo replace old code
             if re.search("initGeetest", driver.page_source):
                 try:
                     self.resolve_geetest(driver)
@@ -195,7 +193,7 @@ class Crawler:
 
     def entry_is_new_and_fits(self, entries, module_name):
         """ Check whether apartment fits and is not present in json log. """
-        filepath = os.path.join(os.getcwd(), module_name + '.json')
+        filepath = os.path.join(os.getcwd(), f'{module_name}_{self.config["user"]}.json')
         if os.path.exists(filepath):
             with open(filepath, 'r') as file:
                 already_contacted_entries = json.load(file)
@@ -219,9 +217,15 @@ class Crawler:
         if self.AUTO_SUBMIT:
             for entry in entries:
                 try:
+                    logger.info(f"Attempt automatic application for {entry['url']}")
                     self.submit_application(entry)
-                except NoSuchElementException:
-                    pass
+                    logger.info('Success')
+                    entry.update({'applied': 'Yes'})
+                except (Exception, ApplicationUnsuccesfulException):
+                    logger.info('Failure')
+                    entry.update({'applied': 'No'})
+                    self.driver.save_screenshot(f'screenshots\\{entry["id"]}.png')
+        self.log_success_rate(entries)
 
     def apartment_fits(self, entry):
         return True
@@ -249,18 +253,18 @@ class Crawler:
 
     @backoff.on_exception(wait_gen=backoff.constant,
                           exception=CaptchaUnsolvableError,
-                          max_tries=3)
+                          max_tries=2)
     def resolve_geetest(self, driver):
         """Resolve GeeTest Captcha"""
-        data = re.findall(
-            "geetest_validate: obj.geetest_validate,\n.*?data: \"(.*)\"",
-            driver.page_source
-        )[0]
-        result = re.findall(r"initGeetest\({(.*?)}", driver.page_source, re.DOTALL)
-
-        geetest = re.findall("gt: \"(.*?)\"", result[0])[0]
-        challenge = re.findall("challenge: \"(.*?)\"", result[0])[0]
         try:
+            data = re.findall(
+                "geetest_validate: obj.geetest_validate,\n.*?data: \"(.*)\"",
+                driver.page_source
+            )[0]
+            result = re.findall(r"initGeetest\({(.*?)}", driver.page_source, re.DOTALL)
+
+            geetest = re.findall("gt: \"(.*?)\"", result[0])[0]
+            challenge = re.findall("challenge: \"(.*?)\"", result[0])[0]
             captcha_response = self.captcha_solver.solve_geetest(
                 geetest,
                 challenge,
@@ -283,96 +287,110 @@ class Crawler:
         """Resolve Captcha"""
         iframe_present = self._wait_for_iframe(driver)
         if checkbox is False and afterlogin_string == "" and iframe_present:
-            google_site_key = driver \
-                .find_element(By.CLASS_NAME, "g-recaptcha") \
-                .get_attribute("data-sitekey")
-
-            try:
-                captcha_result = self.captcha_solver.solve_recaptcha(
-                    google_site_key,
-                    driver.current_url
-                ).result
-
-                driver.execute_script(
-                    f'document.getElementById("g-recaptcha-response").innerHTML="{captcha_result}";'
-                )
-
-                # TODO: Below function call can be different depending on the websites
-                #  implementation. It is responsible for sending the promise that we
-                #  get from recaptcha_answer. For now, if it breaks, it is required to
-                #  reverse engineer it by hand. Not sure if there is a way to automate it.
-                driver.execute_script(f'solvedCaptcha("{captcha_result}")')  # ????????????????????????
-
-                # write_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{captcha_result}";'
-                # submit_js = 'document.getElementById("recaptcha-demo-form").submit();'
-                self._wait_until_iframe_disappears(driver)
-            except CaptchaUnsolvableError:
-                driver.refresh()
-                raise
+            self.solve_defaut_recaptcha(driver)
         else:
             if checkbox:
-                self._clickcaptcha(driver, checkbox)
+                self._clickcaptcha(driver)
             else:
-                self._wait_for_captcha_resolution(driver, checkbox, afterlogin_string)
+                self._wait_for_captcha_resolution(driver, afterlogin_string)
 
-    def _clickcaptcha(self, driver, checkbox: bool):
-        driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe"))
-        recaptcha_checkbox = driver.find_element(By.CLASS_NAME, "recaptcha-checkbox-checkmark")
+    def solve_defaut_recaptcha(self, driver, recaptchatype=1):
+        google_site_key = driver \
+            .find_element(By.CLASS_NAME, "g-recaptcha") \
+            .get_attribute("data-sitekey")
+
         try:
-            recaptcha_checkbox.click()
-        except ElementClickInterceptedException:
-            self.driver.execute_script("arguments[0].click();", recaptcha_checkbox)
-        self._wait_for_captcha_resolution(driver, checkbox)
+            captcha_result = self.captcha_solver.solve_recaptcha(
+                google_site_key,
+                driver.current_url,
+                recaptchatype=recaptchatype
+            ).result
+
+            driver.execute_script(
+                f'document.getElementById("g-recaptcha-response").innerHTML="{captcha_result}";'
+            )
+
+            # TODO: Below function call can be different depending on the websites
+            #  implementation. It is responsible for sending the promise that we
+            #  get from recaptcha_answer. For now, if it breaks, it is required to
+            #  reverse engineer it by hand. Not sure if there is a way to automate it.
+            try:
+                driver.execute_script(f'solvedCaptcha("{captcha_result}")')
+            except JavascriptException:
+                driver.execute_async_script(
+                    f"var payload = '{captcha_result}'; solvedCaptcha(payload);")
+
+            self._wait_until_iframe_disappears(driver)
+        except CaptchaUnsolvableError:
+            driver.refresh()
+            raise
+
+    def _clickcaptcha(self, driver):
+        driver.switch_to.frame(driver.find_element(By.TAG_NAME, "iframe"))
+        self.find_and_click(element="recaptcha-checkbox-checkmark", method=By.CLASS_NAME)
+        # todo if click was enough, app should pass here
+        if not self.click_was_enough(driver):
+            driver.switch_to.default_content()
+            driver.refresh()
+            raise ApplicationUnsuccesfulException
+            # driver.switch_to.default_content()
+            # # todo need to click on captcha to prolong its visibility and also find a way to submit result
+            # try:
+            #     iframe_present = self._wait_for_iframe(
+            #         driver,
+            #         element_selector="iframe[src^='https://www.google.com/recaptcha/api2/bframe?']")
+            #     if iframe_present:
+            #         self.solve_defaut_recaptcha(driver)
+            #     WebDriverWait(driver, 30).until(
+            #         EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked"))
+            #     )
+            # except (selenium.common.exceptions.TimeoutException, selenium.common.exceptions.InvalidSelectorException):
+            #     print("Solving ebay captcha not successful.")
+            #     raise ApplicationUnsuccesfulException
+        self._wait_for_captcha_resolution(driver)
         driver.switch_to.default_content()
 
-    def _wait_for_captcha_resolution(self, driver, checkbox: bool, afterlogin_string=""):
-        if checkbox:
-            try:
-                # todo captcha pictures here, need to handle
-                WebDriverWait(driver, 120).until(
-                    EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked"))
-                )
-            except selenium.common.exceptions.TimeoutException:
-                print("Selenium.Timeoutexception")
-        else:
-            xpath_string = f"//*[contains(text(), '{afterlogin_string}')]"
-            try:
-                WebDriverWait(driver, 120) \
-                    .until(EC.visibility_of_element_located((By.XPATH, xpath_string)))
-            except selenium.common.exceptions.TimeoutException:
-                print("Selenium.Timeoutexception")
-
-    def _wait_for_iframe(self, driver: selenium.webdriver.Chrome):
-        """Wait for iFrame to appear"""
+    def click_was_enough(self, driver):
         try:
-            iframe = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']")))
-            return iframe
-        except NoSuchElementException:
-            print("No iframe found, therefore no chaptcha verification necessary")
-            return None
-        # iframe = None
-        # element_selectors = ["body > div.page-wrapper > div > div.main__captcha",
-        #                      "#loginForm > div > div:nth-child(3) > div.g-recaptcha > div > div > iframe",
-        #                      "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']"]
-        # while iframe is None:
-        #     element_selector = element_selectors.pop()
-        #     try:
-        #         iframe = WebDriverWait(driver, 30).until(EC.visibility_of_element_located(
-        #             (By.CSS_SELECTOR, element_selector)))
-        #         return iframe
-        #     except (TimeoutException, NoSuchElementException):
-        #         if len(element_selectors) == 0:
-        #             print("No iframe found, therefore no chaptcha verification necessary")
-        #             return None
+            WebDriverWait(driver, 30).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "recaptcha-checkbox-checked")))
+            return True
+        except selenium.common.exceptions.TimeoutException:
+            return False
+
+    def _wait_for_captcha_resolution(self, driver, afterlogin_string=""):
+        xpath_string = f"//*[contains(text(), '{afterlogin_string}')]"
+        try:
+            WebDriverWait(driver, 120) \
+                .until(EC.visibility_of_element_located((By.XPATH, xpath_string)))
+        except selenium.common.exceptions.TimeoutException:
+            print("No Captcha solution found.")
+
+    def _wait_for_iframe(self, driver: selenium.webdriver.Chrome, element_selector=None):
+        """Wait for iFrame to appear"""
+        iframe = None
+        if not element_selector:
+            element_selector = "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']"
+        while iframe is None:
+            try:
+                iframe = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, element_selector)))
+                return iframe
+            except (selenium.common.exceptions.TimeoutException, NoSuchElementException):
+                logger.info("No iframe found, therefore no chaptcha verification necessary")
+                return None
 
     def _wait_until_iframe_disappears(self, driver: selenium.webdriver.Chrome):
         """Wait for iFrame to disappear"""
+        element_selectors = ["iframe[src^='https://www.google.com/recaptcha/api2/bframe?']",
+                             "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']"]
+        element_selector = element_selectors.pop()
         try:
             WebDriverWait(driver, 10).until(EC.invisibility_of_element(
-                (By.CSS_SELECTOR, "iframe[src^='https://www.google.com/recaptcha/api2/anchor?']")))
-        except NoSuchElementException:
-            print("Element not found")
+                (By.CSS_SELECTOR, element_selector)))
+        except (selenium.common.exceptions.TimeoutException, NoSuchElementException):
+            if len(element_selectors) == 0:
+                logger.info("Element not found")
 
     def get_driver(self):
         captcha_config = self.config.get('captcha')
@@ -386,10 +404,7 @@ class Crawler:
             except CaptchaUnsolvableError:
                 pass
         elif re.search("g-recaptcha", self.driver.page_source):
-            # try:
             self.resolve_recaptcha(self.driver, checkbox, self.afterlogin_string)
-            # except CaptchaUnsolvableError:
-            #     pass  # todo raise something
         else:
             raise CaptchaNotFound
 
@@ -411,6 +426,7 @@ class Crawler:
 
     def find_and_fill(self, element, input_value, method=By.XPATH):
         text_area = self.driver.find_element(method, element)
+        text_area.clear()
         text_area.send_keys(input_value)
 
     @staticmethod
@@ -418,5 +434,27 @@ class Crawler:
         with open(file=os.path.join(os.getcwd(), file_name), encoding='utf-8') as file:
             return file.read()
 
+    def click_away_conditions(self):
+        NotImplementedError
+
+    def log_success_rate(self, entries):
+        """ Log the success rate to a json """
+        total = len(entries)
+        succesful = len([entry for entry in entries if entry['applied']])
+        failed_entries = [entry['id'] for entry in entries]
+        log = {
+            'rate': succesful / total if total > 0 else None,
+            'total': total,
+            'successful': succesful,
+            'failed': failed_entries
+        }
+        with open(f'success_rate_logs\\{time.time()}_success_rate_log.json', 'w') as f:
+            json.dump(log, f)
+
+
 class CaptchaNotFound(Exception):
+    pass
+
+
+class ApplicationUnsuccesfulException(Exception):
     pass

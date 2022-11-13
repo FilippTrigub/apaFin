@@ -9,7 +9,7 @@ from selenium.common import ElementNotInteractableException, NoSuchElementExcept
 from selenium.webdriver.common.by import By
 
 from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler
+from flathunter.abstract_crawler import Crawler, ApplicationUnsuccesfulException
 from flathunter.string_utils import remove_prefix
 
 
@@ -27,6 +27,7 @@ class CrawlWgGesucht(Crawler):
 
     def get_results(self, search_url, max_pages=None):
         entries = super().get_results(search_url, max_pages)
+        entries = [entry for entry in entries if entry['id'] != 0]
         self.submit_to_entries(entries)
 
         return entries
@@ -140,52 +141,50 @@ class CrawlWgGesucht(Crawler):
         return BeautifulSoup(resp.content, 'html.parser')
 
     def submit_application(self, entry):
-        pass
         # todo does not work on 2nd entry
         # change the location of the driver on your machine
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
         try:
             self.driver.get('https://www.wg-gesucht.de/nachricht-senden/' + entry['url'].split('/')[-1])
-            # todo not sure what this is self.find_and_click("//*[contains(text(), 'Accept all')]")
+            self.click_away_conditions()
 
             # log in on first connect
             try:
-                self.find_and_click("//*[contains(text(), 'Accept all')]")
-                # accept_button = self.driver.find_elements(By.XPATH, "//*[contains(text(), 'Accept all')]")[0]
-                # accept_button.click() '/html/body/div[9]/div/input'
                 try:
-                    self.find_and_click("//*[contains(text(), 'Login')]")
-                    # login_button = self.driver.find_elements(By.XPATH, "//*[contains(text(), 'Login')]")[0]
-                    # login_button.click()
-                except ElementNotInteractableException:
                     self.find_and_click("//*[contains(text(), 'loggen')]")
-                    # login_button = self.driver.find_elements(By.XPATH, "//*[contains(text(), 'loggen')]")[0]
-                    # login_button.click()
-                self.find_and_fill(element='login_email_username', input_value=self.auto_submit_config['login_wggesucht']['username'], method=By.ID)
-                # email = self.driver.find_element(By.ID, 'login_email_username')
-                # email.send_keys('philtrigu@gmail.com')
+                except (NoSuchElementException, ElementNotInteractableException):
+                    self.find_and_click("//*[contains(text(), 'Login')]")
+                self.find_and_fill(element='login_email_username',
+                                   input_value=self.auto_submit_config['login_wggesucht']['username'], method=By.ID)
                 self.find_and_fill(element='login_password',
                                    input_value=self.auto_submit_config['login_wggesucht']['password'], method=By.ID)
-                # passwd = self.driver.find_element(By.ID, 'login_password')
-                # passwd.send_keys('a$GM375RnTLjJx5E')
 
                 self.find_and_click('login_submit', method=By.ID)
-                # login_button1 = self.driver.find_elements(By.ID, 'login_submit')[0]
-                # login_button1.click()
+                logger.info('Login successful')
             except NoSuchElementException:
                 pass
 
-            se_button1 = self.driver.find_elements(By.ID, 'sicherheit_bestaetigung')
-            timestamp = self.driver.find_elements(By.ID, 'time_stamp')
-            if (len(se_button1) < 1 or len(timestamp) != 0):
-                print("Already sent message to this offer...")
+            # if already contacted, break here
+            time.sleep(5)
+            if self.driver.page_source.find(self.contact_text[-10:]) != -1:
                 return 0
-            else:
-                se_button1[0].click()
-            # todo name = driver.find_elements(By.XPATH,"//*[contains(text(), '^Nachricht an ')]")[0]
 
-            title = self.driver.find_element(By.XPATH, '/html/body/div[3]/div[1]/div[3]/div[1]/div[1]/div[3]/div[1]/label/b')
-            title_words = title.text[:-1].split(' ')
+            try:
+                # wg gesucht shows warning message at times, click away
+                self.find_and_click(element='sicherheit_bestaetigung', method=By.ID)
+            except NoSuchElementException:
+                pass
+
+            # title element may vary in position
+            title_words = ''
+            for i in [3, 4, 5]:
+                try:
+                    title = self.driver.find_element(By.XPATH,
+                                                     f'/html/body/div[3]/div[1]/div[3]/div[1]/div[1]/div[{i}]/div[1]/label/b')
+                    title_words = title.text[:-1].split(' ')
+                    break
+                except NoSuchElementException:
+                    pass
 
             if 'Herr' in title_words and len(title_words) == title_words.index('Herr') + 2:
                 greeting = f"Guten Tag Herr {title_words[title_words.index('Herr') + 1]},\n\n"
@@ -195,47 +194,24 @@ class CrawlWgGesucht(Crawler):
                 greeting = "Guten Tag,\n\n"
             contact_text_with_salutation = greeting + self.contact_text
 
-
             self.find_and_fill(element='message_input', input_value=contact_text_with_salutation, method=By.ID)
-            # text_area = self.driver.find_element(By.ID, 'message_input')
-            # text_area.clear()
-            # # text_area.send_keys("\n Hello, test")
-            # text_area.send_keys(
-            #     u"Hallo!\n\nIn mir finden Sie einen Mieter mit solidem Einkommen (3700+ netto) und makelloser Schufa, der immer "
-            #     u"pünktlich zahlt und sich gut um die Wohnung kümmern wird. Weiterhin bin ich seit 8 Jahren in Berlin "
-            #     u"ansässig und suche folglich nach einer passenden Bleibe für die Zukunft.\n\n"
-            #     u"Ich bin Nichtraucher und würde allein einziehen. Kinder und Haustiere sind nicht geplant.\n\nIhre Wohnung finde ich "
-            #     u"sehr ansprechend sowie Sie sicherlich auch mein Profil ansprechend finden werden. "
-            #     u"Vereinbaren wir doch einen Termin! \n\nBeste Grüße\n\nFilipp"
-            #     u"\n\n\n\n---ENGLISH---\n\n\n\n"
-            #     u"Hi!\n\nIn me you will find a tenant with solid income (3700+ net) and a perfect Schufa, who always pays on "
-            #     u"time and can take care of the flat. Beyond that I am living in Berlin for 8 years and am therefore "
-            #     u"looking for a fitting flat for the future.\n\nI do not smoke and would move in alone. Kids or pets are not planned."
-            #     u"\n\nI find your apartment appealing just as you will surely find my profile to your liking. So let us set "
-            #     u"up an appointment!"
-            #     u"\n\nBest regards\nFilipp")
 
-            self.find_and_click('//*[@id="messenger_form"]/div[1]/div[5]/button[2]')
-            # attachment_button = self.driver.find_element(By.XPATH, '//*[@id="messenger_form"]/div[1]/div[5]/button[2]')
-            # attachment_button.click()
-
-            self.find_and_click('//*[@id="file_storage_wrapper"]/div[1]')
-            # pdf_element = self.driver.find_element(By.XPATH, '//*[@id="file_storage_wrapper"]/div[1]')
-            # pdf_element.click()
-
-            self.find_and_click('//*[@id="attachments_modal"]/div/div/div[2]/div/div[2]/button')
-            # fertig_button = self.driver.find_element(By.XPATH,
-            #                                          '//*[@id="attachments_modal"]/div/div/div[2]/div/div[2]/button')
-            # fertig_button.click()
+            # add documents
+            # self.find_and_click('//*[@id="messenger_form"]/div[1]/div[5]/button[2]')
+            #
+            # self.find_and_click('//*[@id="file_storage_wrapper"]/div[1]')
+            #
+            # self.find_and_click('//*[@id="attachments_modal"]/div/div/div[2]/div/div[2]/button')
 
             self.find_and_click("//button[@data-ng-click='submit()' or contains(.,'Nachricht senden')]")
-            # submit_button1 = self.driver.find_element(By.XPATH,
-            #                                           "//button[@data-ng-click='submit()' or contains(.,'Nachricht senden')]")
-            # submit_button1.click()
-
-        # except ElementNotInteractableException as e:
-        #     print("Unable to find HTML element")
-        #     print("".join(traceback.TracebackException.from_exception(e).format()))
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.debug("Unable to find HTML element")
+            logger.debug("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException
+
+    def click_away_conditions(self):
+        try:
+            self.find_and_click('/html/body/div[2]/div[1]/div[2]/span[2]/a')
+            logger.info('Click away conditions')
+        except NoSuchElementException:
+            pass

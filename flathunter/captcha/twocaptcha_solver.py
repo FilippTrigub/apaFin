@@ -13,6 +13,7 @@ from flathunter.captcha.captcha_solver import (
     RecaptchaResponse,
 )
 
+
 class TwoCaptchaSolver(CaptchaSolver):
     """Implementation of Captcha solver for 2Captcha"""
 
@@ -33,8 +34,7 @@ class TwoCaptchaSolver(CaptchaSolver):
                                untyped_result["geetest_validate"],
                                untyped_result["geetest_seccode"])
 
-
-    def solve_recaptcha(self, google_site_key: str, page_url: str) -> RecaptchaResponse:
+    def solve_recaptcha(self, google_site_key: str, page_url: str, recaptchatype: int = None) -> RecaptchaResponse:
         logger.info("Trying to solve recaptcha.")
         params = {
             "key": self.api_key,
@@ -44,7 +44,6 @@ class TwoCaptchaSolver(CaptchaSolver):
         }
         captcha_id = self.__submit_2captcha_request(params)
         return RecaptchaResponse(self.__retrieve_2captcha_result(captcha_id))
-
 
     @backoff.on_exception(**CaptchaSolver.backoff_options)
     def __submit_2captcha_request(self, params: Dict[str, str]) -> str:
@@ -56,7 +55,6 @@ class TwoCaptchaSolver(CaptchaSolver):
             raise requests.HTTPError(response=submit_response)
 
         return submit_response.text.split("|")[1]
-
 
     @backoff.on_exception(**CaptchaSolver.backoff_options)
     def __retrieve_2captcha_result(self, captcha_id: str):

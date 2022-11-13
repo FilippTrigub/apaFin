@@ -5,12 +5,14 @@ from dataclasses import dataclass
 import requests
 import backoff
 
+
 @dataclass
 class GeetestResponse:
     """Responde from GeeTest Captcha"""
     challenge: str
     validate: str
     sec_code: str
+
 
 @dataclass
 class RecaptchaResponse:
@@ -34,12 +36,14 @@ class CaptchaSolver:
         """Should be implemented in subclass"""
         raise NotImplementedError()
 
-    def solve_recaptcha(self, google_site_key: str, page_url: str) -> RecaptchaResponse:
+    def solve_recaptcha(self, google_site_key: str, page_url: str, recaptchatype: int) -> RecaptchaResponse:
         """Should be implemented in subclass"""
         raise NotImplementedError()
 
+
 class CaptchaUnsolvableError(Exception):
     """Raised when Captcha was unsolveable"""
+
     def __init__(self):
         super().__init__()
         self.message = "Failed to solve captcha."

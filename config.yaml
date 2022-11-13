@@ -23,9 +23,9 @@ loop:
 # 	- https://www.immobilienscout24.de/Suche/...
 # 	- https://www.wg-gesucht.de/...
 urls:
-  - https://www.immobilienscout24.de/Suche/shape/wohnung-mieten?shape=dWRuX0lnZGFwQX5tQF9dcEV9WmREaVJ2bEJxc0Z4eUBlZUloc0B1akRyQWl3Q3NSaWpCZWZAd2dAeWxEdWFCc19CaUN3eUBqcEBnb0RqfEdtSWxzRWZiQHZfQ2BqQGBqQXJBfHdGfm1AeGxEZmJAflw.&numberofrooms=1.5-&price=-1500.0&livingspace=35.0-&pricetype=rentpermonth&sorting=2
-  - https://www.immowelt.de/liste/berlin/wohnungen/mieten?ami=40&d=true&pma=1300&r=5&rmi=2&sd=DESC&sf=TIMESTAMP&sp=1
-  - https://www.wg-gesucht.de/wohnungen-in-Berlin.8.2.1.0.html?csrf_token=7ce1c298a5d9c714fc2ad5a7e6c05a4d2075a22a&offer_filter=1&city_id=8&sort_column=0&sort_order=0&noDeact=1&dTo=1669849200&categories%5B%5D=2&rent_types%5B%5D=2&sMin=35&rMax=1400&ot%5B%5D=126&ot%5B%5D=85077&ot%5B%5D=132&ot%5B%5D=151&ot%5B%5D=153&ot%5B%5D=85084&ot%5B%5D=163&ot%5B%5D=171&ot%5B%5D=178&ot%5B%5D=183&ot%5B%5D=85094&exc=2&kit=1
+#  - https://www.immobilienscout24.de/Suche/shape/wohnung-mieten?shape=dWRuX0lnZGFwQX5tQF9dcEV9WmREaVJ2bEJxc0Z4eUBlZUloc0B1akRyQWl3Q3NSaWpCZWZAd2dAeWxEdWFCc19CaUN3eUBqcEBnb0RqfEdtSWxzRWZiQHZfQ2BqQGBqQXJBfHdGfm1AeGxEZmJAflw.&numberofrooms=1.5-&price=-1500.0&livingspace=35.0-&pricetype=rentpermonth&sorting=2
+#  - https://www.immowelt.de/liste/berlin/wohnungen/mieten?ami=40&d=true&pma=1300&r=5&rmi=2&sd=DESC&sf=TIMESTAMP&sp=1
+#  - https://www.wg-gesucht.de/wohnungen-in-Berlin.8.2.1.0.html?csrf_token=7ce1c298a5d9c714fc2ad5a7e6c05a4d2075a22a&offer_filter=1&city_id=8&sort_column=0&sort_order=0&noDeact=1&dTo=1669849200&categories%5B%5D=2&rent_types%5B%5D=2&sMin=35&rMax=1400&ot%5B%5D=126&ot%5B%5D=85077&ot%5B%5D=132&ot%5B%5D=151&ot%5B%5D=153&ot%5B%5D=85084&ot%5B%5D=163&ot%5B%5D=171&ot%5B%5D=178&ot%5B%5D=183&ot%5B%5D=85094&exc=2&kit=1
   - https://www.ebay-kleinanzeigen.de/s-wohnung-mieten/berlin/anzeige:angebote/preis::1300/wohnung/k0c203l3331r10+wohnung_mieten.qm_d:35.00%2C+wohnung_mieten.swap_s:nein+wohnung_mieten.verfuegbarm_i:10%2C+wohnung_mieten.verfuegbary_i:2022%2C+wohnung_mieten.zimmer_d:2.0%2C
 
 
@@ -98,10 +98,11 @@ filters:
 #	- {url}: URL to the expose
 message: |
     {title}
-    Zimmer: {rooms}
-    Größe: {size}
-    Preis: {price}
-    Ort: {address}
+    Applied: {applied}
+    Rooms: {rooms}
+    Size: {size}
+    Price: {price}
+    Location: {address}
 
     {url}
 

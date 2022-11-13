@@ -7,9 +7,10 @@ import traceback
 from jsonpath_ng import parse
 from selenium.common.exceptions import JavascriptException, NoSuchElementException, NoSuchWindowException, \
     TimeoutException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound
+from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
 from flathunter.captcha.captcha_solver import CaptchaUnsolvableError
 from flathunter.logging import logger
 
@@ -230,21 +231,28 @@ class CrawlImmobilienscout(Crawler):
                 details['price'] = ''
                 details['size'] = ''
                 details['rooms'] = ''
-            # print entries
-            exist = False
-            for expose in entries:
-                if expose_id == expose["id"]:
-                    exist = True
-                    break
-            if not exist:
-                entries.append(details)
+            # exist = False todo
+            # for expose in entries:
+            #     if expose_id == expose["id"]:
+            #         exist = True
+            #         break
+            # if not exist:
+            entries.append(details)
 
         logger.debug('Number of entries found: %d', len(entries))
         return entries
 
     def submit_application(self, entry):
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(15)
         self.driver.get(f'https://www.immobilienscout24.de/{entry["id"]}#/basicContact/email')
+        # self.click_away_conditions()
+        self.click_away_premium_membership_offer()
+
+        # Captchas might appear here.
+        try:
+            self.try_solving_capthca()
+        except (TimeoutException, CaptchaNotFound):
+            pass
 
         # Case 1: Some offers are for premium members only. In this case, click close, log in, get contact page again.
         try:
@@ -279,9 +287,9 @@ class CrawlImmobilienscout(Crawler):
             password_area.send_keys(self.auto_submit_config['login_immoscout']['password'])
             submit_password_button = self.driver.find_element(By.XPATH, '/html/body/div[1]/div/form/button')
             submit_password_button.click()
-        except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.info('Login successful')
+        except NoSuchElementException:
+            pass
 
         # Captchas might appear here.
         try:
@@ -292,7 +300,10 @@ class CrawlImmobilienscout(Crawler):
         try:
             title = self.driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div/div/div[1]/h4')
             title_words = title.text.split(' ')
+        except NoSuchElementException:
+            title_words = ''
 
+        try:
             if 'Herr' in title_words and len(title_words) == title_words.index('Herr') + 2:
                 greeting = f"Guten Tag Herr {title_words[title_words.index('Herr') + 1]},\n\n"
             elif 'Frau' in title_words and len(title_words) == title_words.index('Frau') + 2:
@@ -300,26 +311,37 @@ class CrawlImmobilienscout(Crawler):
             else:
                 greeting = "Guten Tag,\n\n"
             contact_text_with_salutation = greeting + self.contact_text
-            # last_name = self.driver.find_element(By.ID, 'contactForm-lastName')
-            # last_name.send_keys("Trigub")
-            # first_name = self.driver.find_element(By.ID, 'contactForm-firstName')
-            # first_name.send_keys("Filipp")
-            # email = self.driver.find_element(By.ID, 'contactForm-emailAddress')
-            # email.send_keys("filipp.trigub@gmail.com")
-            # street = self.driver.find_element(By.ID, 'contactForm-street')
-            # street.send_keys("Schildhornstr")
-            # house = self.driver.find_element(By.ID, 'contactForm-houseNumber')
-            # house.send_keys("99")
-            # post = self.driver.find_element(By.ID, 'contactForm-postcode')
-            # post.send_keys("12163")
-            # city = self.driver.find_element(By.ID, 'contactForm-city')
-            # city.send_keys("Berlin")
             text_area = self.driver.find_element(By.ID, 'contactForm-Message')
             text_area.clear()
             text_area.send_keys(contact_text_with_salutation)
-            submit_button = self.driver.find_element(By.XPATH,
-                                                     '//*[@id="is24-expose-modal"]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[5]/div')
-            submit_button.click()
+            self.check_for_optional_fields()
+
+            self.find_and_click(
+                '//*[@id="is24-expose-modal"]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[5]/div')
         except NoSuchElementException as e:
-            print("Unable to find HTML element")
-            print("".join(traceback.TracebackException.from_exception(e).format()))
+            logger.debug("Unable to find HTML element")
+            logger.debug("".join(traceback.TracebackException.from_exception(e).format()))
+            raise ApplicationUnsuccesfulException
+
+    def check_for_optional_fields(self):
+        try:
+            "Haben Sie Haustiere?"
+            self.find_and_click(
+                '/html/body/div[5]/div/div/div/div/div/div[1]/div[2]/div/div/div/form/div/div/div/div[3]/div/div[5]/div/div/div[2]/div/div/div[7]/ul/li[3]')
+            logger.info('Fill optional fields')
+        except NoSuchElementException:
+            pass
+
+    def click_away_conditions(self):
+        try:
+            self.find_and_click('/html/body/div[10]//div/div/div/div/div[2]/div/div[2]/div/div/div/button[2]')
+            logger.info('Click away conditions')
+        except NoSuchElementException:
+            pass
+
+    def click_away_premium_membership_offer(self):
+        try:
+            self.find_and_click('/html/body/div[5]/div/div/div/div/div[2]')
+            logger.info('Click away premium membership offer')
+        except NoSuchElementException:
+            pass

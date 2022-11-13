@@ -231,14 +231,13 @@ class CrawlImmobilienscout(Crawler):
                 details['price'] = ''
                 details['size'] = ''
                 details['rooms'] = ''
-            # print entries
-            exist = False
-            for expose in entries:
-                if expose_id == expose["id"]:
-                    exist = True
-                    break
-            if not exist:
-                entries.append(details)
+            # exist = False todo
+            # for expose in entries:
+            #     if expose_id == expose["id"]:
+            #         exist = True
+            #         break
+            # if not exist:
+            entries.append(details)
 
         logger.debug('Number of entries found: %d', len(entries))
         return entries

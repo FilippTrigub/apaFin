@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import time
 from time import sleep
 import backoff
 import requests
@@ -192,7 +193,7 @@ class Crawler:
 
     def entry_is_new_and_fits(self, entries, module_name):
         """ Check whether apartment fits and is not present in json log. """
-        filepath = os.path.join(os.getcwd(), module_name + '.json')
+        filepath = os.path.join(os.getcwd(), f'{module_name}_{self.config["user"]}.json')
         if os.path.exists(filepath):
             with open(filepath, 'r') as file:
                 already_contacted_entries = json.load(file)
@@ -223,6 +224,8 @@ class Crawler:
                 except (Exception, ApplicationUnsuccesfulException):
                     logger.info('Failure')
                     entry.update({'applied': 'No'})
+                    self.driver.save_screenshot(f'screenshots\\{entry["id"]}.png')
+        self.log_success_rate(entries)
 
     def apartment_fits(self, entry):
         return True
@@ -250,18 +253,18 @@ class Crawler:
 
     @backoff.on_exception(wait_gen=backoff.constant,
                           exception=CaptchaUnsolvableError,
-                          max_tries=3)
+                          max_tries=2)
     def resolve_geetest(self, driver):
         """Resolve GeeTest Captcha"""
-        data = re.findall(
-            "geetest_validate: obj.geetest_validate,\n.*?data: \"(.*)\"",
-            driver.page_source
-        )[0]
-        result = re.findall(r"initGeetest\({(.*?)}", driver.page_source, re.DOTALL)
-
-        geetest = re.findall("gt: \"(.*?)\"", result[0])[0]
-        challenge = re.findall("challenge: \"(.*?)\"", result[0])[0]
         try:
+            data = re.findall(
+                "geetest_validate: obj.geetest_validate,\n.*?data: \"(.*)\"",
+                driver.page_source
+            )[0]
+            result = re.findall(r"initGeetest\({(.*?)}", driver.page_source, re.DOTALL)
+
+            geetest = re.findall("gt: \"(.*?)\"", result[0])[0]
+            challenge = re.findall("challenge: \"(.*?)\"", result[0])[0]
             captcha_response = self.captcha_solver.solve_geetest(
                 geetest,
                 challenge,
@@ -433,6 +436,20 @@ class Crawler:
 
     def click_away_conditions(self):
         NotImplementedError
+
+    def log_success_rate(self, entries):
+        """ Log the success rate to a json """
+        total = len(entries)
+        succesful = len([entry for entry in entries if entry['applied']])
+        failed_entries = [entry['id'] for entry in entries]
+        log = {
+            'rate': succesful / total if total > 0 else None,
+            'total': total,
+            'successful': succesful,
+            'failed': failed_entries
+        }
+        with open(f'success_rate_logs\\{time.time()}_success_rate_log.json', 'w') as f:
+            json.dump(log, f)
 
 
 class CaptchaNotFound(Exception):

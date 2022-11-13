@@ -250,17 +250,19 @@ class CrawlImmobilienscout(Crawler):
         try:
             close_button = self.driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div/div[2]/button')
             self.driver.execute_script("arguments[0].click();", close_button)
-            login_button = self.driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/header/div/div[3]/div/ul/li/div/div/div/div[1]/a')
+            login_button = self.driver.find_element(By.XPATH,
+                                                    '/html/body/div[2]/div[2]/div/header/div/div[3]/div/ul/li/div/div/div/div[1]/a')
             self.driver.execute_script("arguments[0].click();", login_button)
             username_area = self.driver.find_element(By.ID, 'username')
-            username_area.send_keys('philtrigu@gmail.com')
+            username_area.send_keys(self.auto_submit_config['login_immoscout']['username'])
             submit_username_button = self.driver.find_element(By.ID, 'submit')
             submit_username_button.click()
             password_area = self.driver.find_element(By.XPATH, '/html/body/div[1]/div/form/div[4]/div/input')
-            password_area.send_keys('Kw*2I10l^u8exE')
+            password_area.send_keys(self.auto_submit_config['login_immoscout']['password'])
             submit_password_button = self.driver.find_element(By.XPATH, '/html/body/div[1]/div/form/button')
             submit_password_button.click()
             self.driver.get(f'https://www.immobilienscout24.de/{entry["id"]}#/basicContact/email')
+            logger.info('Login successful')
         except NoSuchElementException:
             pass
 

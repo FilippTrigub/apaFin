@@ -42,4 +42,4 @@ Before running the project for the first time, copy `config.yaml.dist` to `confi
 
 ### Contributions
 
-This repo is a fork of the flathunter repo with adaptation for automatic application made by @PhilTrigu .
+This repo is a fork of the <a href="https://github.com/flathunters/flathunter">flathunter</a> repo with adaptation for automatic application made by @PhilTrigu .

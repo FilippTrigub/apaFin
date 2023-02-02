@@ -1,9 +1,9 @@
 """Built-in expose processor implementations. Used by the processor pipelines
-   in flathunter and in the webservice"""
+   in apaFin and in the webservice"""
 import re
 
-from flathunter.logging import logger
-from flathunter.abstract_processor import Processor
+from apaFin.logging import logger
+from apaFin.abstract_processor import Processor
 
 class Filter(Processor):
     """Filter processor implementation. Applies a filter to the list of exposes"""

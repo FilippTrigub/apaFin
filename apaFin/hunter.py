@@ -3,11 +3,11 @@ import traceback
 from itertools import chain
 import requests
 
-from flathunter.logging import logger
-from flathunter.config import YamlConfig
-from flathunter.filter import Filter
-from flathunter.processor import ProcessorChain
-from flathunter.captcha.captcha_solver import CaptchaUnsolvableError
+from apaFin.logging import logger
+from apaFin.config import YamlConfig
+from apaFin.filter import Filter
+from apaFin.processor import ProcessorChain
+from apaFin.captcha.captcha_solver import CaptchaUnsolvableError
 
 
 class Hunter:

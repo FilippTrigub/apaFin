@@ -2,8 +2,8 @@
 import re
 import json
 
-from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler
+from apaFin.logging import logger
+from apaFin.abstract_crawler import Crawler
 
 class CrawlSubito(Crawler):
     """Implementation of Crawler interface for Subito"""

@@ -1,9 +1,9 @@
 """Flathunter implementation for website"""
-from flathunter.logging import logger
-from flathunter.hunter import Hunter
-from flathunter.filter import Filter
-from flathunter.processor import ProcessorChain
-from flathunter.exceptions import BotBlockedException, UserDeactivatedException
+from apaFin.logging import logger
+from apaFin.hunter import Hunter
+from apaFin.filter import Filter
+from apaFin.processor import ProcessorChain
+from apaFin.exceptions import BotBlockedException, UserDeactivatedException
 
 class WebHunter(Hunter):
     """Flathunter implementation for website. Designed to hunt all exposes from

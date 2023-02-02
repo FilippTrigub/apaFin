@@ -1,15 +1,15 @@
 """Utility classes for building chains for processors"""
 from functools import reduce
 
-from flathunter.default_processors import AddressResolver
-from flathunter.default_processors import Filter
-from flathunter.default_processors import LambdaProcessor
-from flathunter.default_processors import CrawlExposeDetails
-from flathunter.sender_mattermost import SenderMattermost
-from flathunter.sender_apprise import SenderApprise
-from flathunter.sender_telegram import SenderTelegram
-from flathunter.gmaps_duration_processor import GMapsDurationProcessor
-from flathunter.idmaintainer import SaveAllExposesProcessor
+from apaFin.default_processors import AddressResolver
+from apaFin.default_processors import Filter
+from apaFin.default_processors import LambdaProcessor
+from apaFin.default_processors import CrawlExposeDetails
+from apaFin.sender_mattermost import SenderMattermost
+from apaFin.sender_apprise import SenderApprise
+from apaFin.sender_telegram import SenderTelegram
+from apaFin.gmaps_duration_processor import GMapsDurationProcessor
+from apaFin.idmaintainer import SaveAllExposesProcessor
 
 class ProcessorChainBuilder:
     """Builder pattern for building chains of processors"""

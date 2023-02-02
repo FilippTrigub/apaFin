@@ -2,7 +2,7 @@
 from functools import reduce
 import re
 
-from flathunter.idmaintainer import AlreadySeenFilter
+from apaFin.idmaintainer import AlreadySeenFilter
 
 class ExposeHelper:
     """Helper functions for extracting data from expose text"""

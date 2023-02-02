@@ -2,8 +2,8 @@ import unittest
 
 import requests_mock
 
-from flathunter.sender_mattermost import SenderMattermost
-from flathunter.config import YamlConfig
+from apaFin.sender_mattermost import SenderMattermost
+from apaFin.config import YamlConfig
 
 
 class SenderMattermostTest(unittest.TestCase):

@@ -1,8 +1,8 @@
 """Functions and classes related to sending Apprise messages"""
 import apprise
 
-from flathunter.abstract_notifier import Notifier
-from flathunter.abstract_processor import Processor
+from apaFin.abstract_notifier import Notifier
+from apaFin.abstract_processor import Processor
 
 
 class SenderApprise(Processor, Notifier):

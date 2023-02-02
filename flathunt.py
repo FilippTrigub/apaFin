@@ -9,11 +9,11 @@ import os
 import logging
 import time
 
-from flathunter.logging import logger, wdm_logger, configure_logging
-from flathunter.idmaintainer import IdMaintainer
-from flathunter.hunter import Hunter
-from flathunter.config import Config, Env
-from flathunter.heartbeat import Heartbeat
+from apaFin.logging import logger, wdm_logger, configure_logging
+from apaFin.idmaintainer import IdMaintainer
+from apaFin.hunter import Hunter
+from apaFin.config import Config, Env
+from apaFin.heartbeat import Heartbeat
 
 __author__ = "Jan Harrie"
 __version__ = "1.0"
@@ -38,7 +38,7 @@ def launch_flat_hunt(config, heartbeat=None):
 
 
 def main():
-    """Processes command-line arguments, loads the config, launches the flathunter"""
+    """Processes command-line arguments, loads the config, launches the apaFin"""
     parser = argparse.ArgumentParser(
         description=("Searches for flats on Immobilienscout24.de and wg-gesucht.de"
                      " and sends results to Telegram User"),

@@ -2,13 +2,13 @@
 import logging
 import os
 
-from flathunter.idmaintainer import IdMaintainer
-from flathunter.googlecloud_idmaintainer import GoogleCloudIdMaintainer
-from flathunter.web_hunter import WebHunter
-from flathunter.config import Config
-from flathunter.logging import logger, wdm_logger, configure_logging
+from apaFin.idmaintainer import IdMaintainer
+from apaFin.googlecloud_idmaintainer import GoogleCloudIdMaintainer
+from apaFin.web_hunter import WebHunter
+from apaFin.config import Config
+from apaFin.logging import logger, wdm_logger, configure_logging
 
-from flathunter.web import app
+from apaFin.web import app
 
 config = Config()
 

@@ -163,7 +163,7 @@ telegram:
 #
 # website:
 #    bot_name: bot_name_xxx
-#    domain: flathunter.example.com
+#    domain: apaFin.example.com
 #    session_key: SomeSecretValue
 #    listen:
 #      host: 127.0.0.1

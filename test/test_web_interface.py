@@ -6,9 +6,9 @@ import requests_mock
 
 from flask import session
 
-from flathunter.web import app
-from flathunter.web_hunter import WebHunter
-from flathunter.idmaintainer import IdMaintainer
+from apaFin.web import app
+from apaFin.web_hunter import WebHunter
+from apaFin.idmaintainer import IdMaintainer
 
 from dummy_crawler import DummyCrawler
 from utils.config import StringConfig

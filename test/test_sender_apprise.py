@@ -2,7 +2,7 @@ import unittest
 
 import requests_mock
 
-from flathunter.sender_apprise import SenderApprise
+from apaFin.sender_apprise import SenderApprise
 
 
 class SenderAppriseTest(unittest.TestCase):

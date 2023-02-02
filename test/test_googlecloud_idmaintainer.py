@@ -3,10 +3,10 @@ import datetime
 import re
 from mockfirestore import MockFirestore
 
-from flathunter.googlecloud_idmaintainer import GoogleCloudIdMaintainer
-from flathunter.hunter import Hunter
-from flathunter.web_hunter import WebHunter
-from flathunter.filter import Filter
+from apaFin.googlecloud_idmaintainer import GoogleCloudIdMaintainer
+from apaFin.hunter import Hunter
+from apaFin.web_hunter import WebHunter
+from apaFin.filter import Filter
 from dummy_crawler import DummyCrawler
 from test_util import count
 from utils.config import StringConfig

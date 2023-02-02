@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 from selenium.common import ElementNotInteractableException, NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler, ApplicationUnsuccesfulException
-from flathunter.string_utils import remove_prefix
+from apaFin.logging import logger
+from apaFin.abstract_crawler import Crawler, ApplicationUnsuccesfulException
+from apaFin.string_utils import remove_prefix
 
 
 class CrawlWgGesucht(Crawler):

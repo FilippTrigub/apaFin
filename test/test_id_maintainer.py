@@ -2,10 +2,10 @@ import unittest
 import datetime
 import re
 
-from flathunter.idmaintainer import IdMaintainer
-from flathunter.hunter import Hunter
-from flathunter.web_hunter import WebHunter
-from flathunter.filter import Filter
+from apaFin.idmaintainer import IdMaintainer
+from apaFin.hunter import Hunter
+from apaFin.web_hunter import WebHunter
+from apaFin.filter import Filter
 from dummy_crawler import DummyCrawler
 from test_util import count
 from utils.config import StringConfig

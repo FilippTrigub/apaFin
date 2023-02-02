@@ -20,9 +20,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from undetected_chromedriver import ChromeOptions
 
-from flathunter import proxies
-from flathunter.captcha.captcha_solver import CaptchaUnsolvableError
-from flathunter.logging import logger
+from apaFin import proxies
+from apaFin.captcha.captcha_solver import CaptchaUnsolvableError
+from apaFin.logging import logger
 
 
 class Crawler:

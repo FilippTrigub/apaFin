@@ -3,7 +3,7 @@ import json
 import os
 import sys
 
-from flathunter.crawl_immobilienscout import CrawlImmobilienscout
+from apaFin.crawl_immobilienscout import CrawlImmobilienscout
 from utils.config import StringConfigWithCaptchas
 
 DUMMY_CONFIG = """

@@ -10,9 +10,9 @@ from selenium.common.exceptions import JavascriptException, NoSuchElementExcepti
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
-from flathunter.captcha.captcha_solver import CaptchaUnsolvableError
-from flathunter.logging import logger
+from apaFin.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
+from apaFin.captcha.captcha_solver import CaptchaUnsolvableError
+from apaFin.logging import logger
 
 
 class CrawlImmobilienscout(Crawler):

@@ -1,12 +1,12 @@
 """Providing heartbeat messages"""
 from typing import Union
 
-from flathunter.abstract_notifier import Notifier
-from flathunter.config import Config
-from flathunter.logging import logger
-from flathunter.sender_apprise import SenderApprise
-from flathunter.sender_mattermost import SenderMattermost
-from flathunter.sender_telegram import SenderTelegram
+from apaFin.abstract_notifier import Notifier
+from apaFin.config import Config
+from apaFin.logging import logger
+from apaFin.sender_apprise import SenderApprise
+from apaFin.sender_mattermost import SenderMattermost
+from apaFin.sender_telegram import SenderTelegram
 
 
 def interval2counter(interval: str) -> Union[None, int]:

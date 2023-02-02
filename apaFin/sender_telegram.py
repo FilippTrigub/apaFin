@@ -5,12 +5,12 @@ from typing import Union
 
 import requests
 
-from flathunter.abstract_notifier import Notifier
-from flathunter.abstract_processor import Processor
-from flathunter.config import Config
-from flathunter.exceptions import BotBlockedException, UserDeactivatedException
-from flathunter.logging import logger
-from flathunter.utils import list
+from apaFin.abstract_notifier import Notifier
+from apaFin.abstract_processor import Processor
+from apaFin.config import Config
+from apaFin.exceptions import BotBlockedException, UserDeactivatedException
+from apaFin.logging import logger
+from apaFin.utils import list
 
 
 class SenderTelegram(Processor, Notifier):

@@ -4,8 +4,8 @@ import time
 import urllib
 import requests
 
-from flathunter.logging import logger
-from flathunter.abstract_processor import Processor
+from apaFin.logging import logger
+from apaFin.abstract_processor import Processor
 
 class GMapsDurationProcessor(Processor):
     """Implementation of Processor class to calculate travel durations"""

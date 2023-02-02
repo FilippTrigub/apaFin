@@ -8,8 +8,8 @@ import traceback
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
+from apaFin.logging import logger
+from apaFin.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
 
 
 class CrawlImmowelt(Crawler):

@@ -7,9 +7,9 @@ from urllib import parse
 from flask import render_template, jsonify, request, session, redirect
 from flask_api import status
 
-from flathunter.web import app, log
-from flathunter.web.util import sanitize_float
-from flathunter.filter import FilterBuilder
+from apaFin.web import app, log
+from apaFin.web.util import sanitize_float
+from apaFin.filter import FilterBuilder
 
 class AuthenticationError(Exception):
     """Wrapper for authentication exceptions"""

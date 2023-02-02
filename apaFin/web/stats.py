@@ -3,8 +3,8 @@ import datetime
 import json
 from flask import render_template
 
-from flathunter.web import app
-from flathunter.web.util import sanitize_float
+from apaFin.web import app
+from apaFin.web.util import sanitize_float
 
 @app.route('/stats')
 def stats_view():

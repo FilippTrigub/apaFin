@@ -1,8 +1,8 @@
 """Expose crawler for Idealista"""
 import re
 
-from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler
+from apaFin.logging import logger
+from apaFin.abstract_crawler import Crawler
 
 class CrawlIdealista(Crawler):
     """Implementation of Crawler interface for Idealista"""

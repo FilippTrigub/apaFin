@@ -1,6 +1,6 @@
 import pytest
 
-from flathunter.crawl_ebaykleinanzeigen import CrawlEbayKleinanzeigen
+from apaFin.crawl_ebaykleinanzeigen import CrawlEbayKleinanzeigen
 from utils.config import StringConfig
 
 DUMMY_CONFIG = """

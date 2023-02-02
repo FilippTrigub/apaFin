@@ -1,8 +1,8 @@
 """Expose crawler for Immobiliare"""
 import re
 
-from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler
+from apaFin.logging import logger
+from apaFin.abstract_crawler import Crawler
 
 class CrawlImmobiliare(Crawler):
     """Implementation of Crawler interface for Immobiliare"""

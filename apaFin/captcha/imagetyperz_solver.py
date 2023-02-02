@@ -6,8 +6,8 @@ from time import sleep
 import backoff
 import requests
 
-from flathunter.logging import logger
-from flathunter.captcha.captcha_solver import (
+from apaFin.logging import logger
+from apaFin.captcha.captcha_solver import (
     CaptchaSolver,
     CaptchaUnsolvableError,
     GeetestResponse,

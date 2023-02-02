@@ -1,6 +1,6 @@
 import unittest
 
-from flathunter.string_utils import remove_prefix
+from apaFin.string_utils import remove_prefix
 
 
 class StringUtilsTest(unittest.TestCase):

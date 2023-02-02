@@ -1,7 +1,7 @@
 import logging
 import os
 
-from flathunter.logging import wdm_logger
+from apaFin.logging import wdm_logger
 from webdriver_manager.chrome import ChromeDriverManager
 
 # Cache the driver manager to local folder so that gunicorn can find it

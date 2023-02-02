@@ -5,8 +5,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-from flathunter.logging import logger
-from flathunter.config import Config
+from apaFin.logging import logger
+from apaFin.config import Config
 
 class GoogleCloudIdMaintainer:
     """Storage back-end - implementation of IdMaintainer API"""

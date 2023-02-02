@@ -1,9 +1,9 @@
 import unittest
 import yaml
 import re
-from flathunter.crawl_immowelt import CrawlImmowelt
-from flathunter.hunter import Hunter 
-from flathunter.idmaintainer import IdMaintainer
+from apaFin.crawl_immowelt import CrawlImmowelt
+from apaFin.hunter import Hunter
+from apaFin.idmaintainer import IdMaintainer
 from dummy_crawler import DummyCrawler
 from test_util import count
 from utils.config import StringConfig

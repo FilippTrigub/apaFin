@@ -1,10 +1,10 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/flathunters/flathunter-job', '-f', 'Dockerfile.gcloud.job', '.']
+  args: ['build', '-t', 'gcr.io/flathunters/apaFin-job', '-f', 'Dockerfile.gcloud.job', '.']
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/flathunters/flathunter-job']
+  args: ['push', 'gcr.io/flathunters/apaFin-job']
 images:
-- gcr.io/flathunters/flathunter-job
+- gcr.io/flathunters/apaFin-job
 

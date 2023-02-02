@@ -5,18 +5,18 @@ from typing import Optional
 import yaml
 from dotenv import load_dotenv
 
-from flathunter.captcha.captcha_solver import CaptchaSolver
-from flathunter.captcha.imagetyperz_solver import ImageTyperzSolver
-from flathunter.captcha.twocaptcha_solver import TwoCaptchaSolver
-from flathunter.crawl_ebaykleinanzeigen import CrawlEbayKleinanzeigen
-from flathunter.crawl_idealista import CrawlIdealista
-from flathunter.crawl_immobiliare import CrawlImmobiliare
-from flathunter.crawl_immobilienscout import CrawlImmobilienscout
-from flathunter.crawl_immowelt import CrawlImmowelt
-from flathunter.crawl_wggesucht import CrawlWgGesucht
-from flathunter.crawler_subito import CrawlSubito
-from flathunter.filter import Filter
-from flathunter.logging import logger
+from apaFin.captcha.captcha_solver import CaptchaSolver
+from apaFin.captcha.imagetyperz_solver import ImageTyperzSolver
+from apaFin.captcha.twocaptcha_solver import TwoCaptchaSolver
+from apaFin.crawl_ebaykleinanzeigen import CrawlEbayKleinanzeigen
+from apaFin.crawl_idealista import CrawlIdealista
+from apaFin.crawl_immobiliare import CrawlImmobiliare
+from apaFin.crawl_immobilienscout import CrawlImmobilienscout
+from apaFin.crawl_immowelt import CrawlImmowelt
+from apaFin.crawl_wggesucht import CrawlWgGesucht
+from apaFin.crawler_subito import CrawlSubito
+from apaFin.filter import Filter
+from apaFin.logging import logger
 
 load_dotenv()
 
@@ -252,7 +252,7 @@ class CaptchaEnvironmentConfig():
         return super().captcha_driver_arguments()
 
 class Config(CaptchaEnvironmentConfig,YamlConfig):
-    """Class to represent flathunter configuration"""
+    """Class to represent apaFin configuration"""
 
     def __init__(self, filename=None):
         if filename is None and Env.FLATHUNTER_TARGET_URLS is None:

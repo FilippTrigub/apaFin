@@ -9,8 +9,8 @@ from selenium.common import ElementNotInteractableException, NoSuchElementExcept
 from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.common.by import By
 
-from flathunter.logging import logger
-from flathunter.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
+from apaFin.logging import logger
+from apaFin.abstract_crawler import Crawler, CaptchaNotFound, ApplicationUnsuccesfulException
 from selenium.webdriver.chrome.options import Options
 
 

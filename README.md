@@ -10,6 +10,7 @@ ApaFin searches the usual websites for new offers based on your filters, attempt
 - [Background](#background)
 - [Install](#install)
 - [Configuration](#configuration)
+- [Contributions](#contributions)
 
 ## Motivation
 

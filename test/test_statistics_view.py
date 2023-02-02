@@ -38,4 +38,4 @@ def hunt_client():
 
 def test_statistics_view(hunt_client):
     rv = hunt_client.get('/stats')
-    assert b'<a class="navbar-brand" href="/">Flathunter</a>' in rv.data
+    assert b'<a class="navbar-brand" href="/">ApaFin</a>' in rv.data

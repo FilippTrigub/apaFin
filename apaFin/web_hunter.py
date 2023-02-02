@@ -1,4 +1,4 @@
-"""Flathunter implementation for website"""
+"""ApaFin implementation for website"""
 from apaFin.logging import logger
 from apaFin.hunter import Hunter
 from apaFin.filter import Filter
@@ -6,7 +6,7 @@ from apaFin.processor import ProcessorChain
 from apaFin.exceptions import BotBlockedException, UserDeactivatedException
 
 class WebHunter(Hunter):
-    """Flathunter implementation for website. Designed to hunt all exposes from
+    """ApaFin implementation for website. Designed to hunt all exposes from
        all sites and save them to the database. Includes support for multiple users
        with individual filters implemented in-app"""
 

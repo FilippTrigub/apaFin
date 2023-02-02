@@ -41,15 +41,15 @@ def hunt_client():
 
 def test_get_index(hunt_client):
     rv = hunt_client.get('/')
-    assert b'<a class="navbar-brand" href="/">Flathunter</a>' in rv.data
+    assert b'<a class="navbar-brand" href="/">ApaFin</a>' in rv.data
 
 def test_get_about(hunt_client):
     rv = hunt_client.get('/about')
-    assert b'<a class="navbar-brand" href="/">Flathunter</a>' in rv.data
+    assert b'<a class="navbar-brand" href="/">ApaFin</a>' in rv.data
 
 def test_get_resources(hunt_client):
     rv = hunt_client.get('/resources')
-    assert b'<a class="navbar-brand" href="/">Flathunter</a>' in rv.data
+    assert b'<a class="navbar-brand" href="/">ApaFin</a>' in rv.data
 
 def test_get_index_with_exposes(hunt_client):
     app.config['HUNTER'].hunt_flats()

@@ -44,7 +44,7 @@ def setup_wdm_logger(wdm_new_logger_handler):
     return wdm_log
 
 
-# Setup Flathunter logger
+# Setup ApaFin logger
 logger_handler = LoggerHandler()
 logging.basicConfig(level=logging.INFO, handlers=[logger_handler])
 logger = logging.getLogger('flathunt')

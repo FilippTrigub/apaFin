@@ -1,4 +1,4 @@
-"""Default Flathunter implementation for the command line"""
+"""Default ApaFin implementation for the command line"""
 import traceback
 from itertools import chain
 import requests

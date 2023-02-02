@@ -28,29 +28,29 @@ def _read_env(key, fallback=None):
 
 class Env:
     # Captcha setup
-    FLATHUNTER_2CAPTCHA_KEY = _read_env("FLATHUNTER_2CAPTCHA_KEY")
-    FLATHUNTER_IMAGETYPERZ_TOKEN = _read_env("FLATHUNTER_IMAGETYPERZ_TOKEN")
-    FLATHUNTER_HEADLESS_BROWSER = _read_env("FLATHUNTER_HEADLESS_BROWSER")
+    APAFIN_2CAPTCHA_KEY = _read_env("APAFIN_2CAPTCHA_KEY")
+    APAFIN_IMAGETYPERZ_TOKEN = _read_env("APAFIN_IMAGETYPERZ_TOKEN")
+    APAFIN_HEADLESS_BROWSER = _read_env("APAFIN_HEADLESS_BROWSER")
 
     # Generic Config
-    FLATHUNTER_TARGET_URLS = _read_env("FLATHUNTER_TARGET_URLS")
-    FLATHUNTER_DATABASE_LOCATION = _read_env("FLATHUNTER_DATABASE_LOCATION")
-    FLATHUNTER_GOOGLE_CLOUD_PROJECT_ID = _read_env("FLATHUNTER_GOOGLE_CLOUD_PROJECT_ID")
-    FLATHUNTER_VERBOSE_LOG = _read_env("FLATHUNTER_VERBOSE_LOG")
-    FLATHUNTER_LOOP_PERIOD_SECONDS = _read_env("FLATHUNTER_LOOP_PERIOD_SECONDS")
-    FLATHUNTER_MESSAGE_FORMAT = _read_env("FLATHUNTER_MESSAGE_FORMAT")
+    APAFIN_TARGET_URLS = _read_env("APAFIN_TARGET_URLS")
+    APAFIN_DATABASE_LOCATION = _read_env("APAFIN_DATABASE_LOCATION")
+    APAFIN_GOOGLE_CLOUD_PROJECT_ID = _read_env("APAFIN_GOOGLE_CLOUD_PROJECT_ID")
+    APAFIN_VERBOSE_LOG = _read_env("APAFIN_VERBOSE_LOG")
+    APAFIN_LOOP_PERIOD_SECONDS = _read_env("APAFIN_LOOP_PERIOD_SECONDS")
+    APAFIN_MESSAGE_FORMAT = _read_env("APAFIN_MESSAGE_FORMAT")
 
     # Website setup
-    FLATHUNTER_WEBSITE_SESSION_KEY = _read_env("FLATHUNTER_WEBSITE_SESSION_KEY")
-    FLATHUNTER_WEBSITE_DOMAIN = _read_env("FLATHUNTER_WEBSITE_DOMAIN")
-    FLATHUNTER_WEBSITE_BOT_NAME = _read_env("FLATHUNTER_WEBSITE_BOT_NAME")
+    APAFIN_WEBSITE_SESSION_KEY = _read_env("APAFIN_WEBSITE_SESSION_KEY")
+    APAFIN_WEBSITE_DOMAIN = _read_env("APAFIN_WEBSITE_DOMAIN")
+    APAFIN_WEBSITE_BOT_NAME = _read_env("APAFIN_WEBSITE_BOT_NAME")
 
     # Notification setup
-    FLATHUNTER_NOTIFIERS = _read_env("FLATHUNTER_NOTIFIERS")
-    FLATHUNTER_TELEGRAM_BOT_TOKEN = _read_env("FLATHUNTER_TELEGRAM_BOT_TOKEN")
-    FLATHUNTER_TELEGRAM_BOT_NOTIFY_WITH_IMAGES = _read_env("FLATHUNTER_TELEGRAM_BOT_NOTIFY_WITH_IMAGES")
-    FLATHUNTER_TELEGRAM_RECEIVER_IDS = _read_env("FLATHUNTER_TELEGRAM_RECEIVER_IDS")
-    FLATHUNTER_MATTERMOST_WEBHOOK_URL = _read_env("FLATHUNTER_MATTERMOST_WEBHOOK_URL")
+    APAFIN_NOTIFIERS = _read_env("APAFIN_NOTIFIERS")
+    APAFIN_TELEGRAM_BOT_TOKEN = _read_env("APAFIN_TELEGRAM_BOT_TOKEN")
+    APAFIN_TELEGRAM_BOT_NOTIFY_WITH_IMAGES = _read_env("APAFIN_TELEGRAM_BOT_NOTIFY_WITH_IMAGES")
+    APAFIN_TELEGRAM_RECEIVER_IDS = _read_env("APAFIN_TELEGRAM_RECEIVER_IDS")
+    APAFIN_MATTERMOST_WEBHOOK_URL = _read_env("APAFIN_MATTERMOST_WEBHOOK_URL")
 
 
 class YamlConfig:
@@ -230,17 +230,17 @@ Preis: {price}
 class CaptchaEnvironmentConfig():
 
     def _get_imagetyperz_token(self):
-        if Env.FLATHUNTER_IMAGETYPERZ_TOKEN is not None:
-            return Env.FLATHUNTER_IMAGETYPERZ_TOKEN
+        if Env.APAFIN_IMAGETYPERZ_TOKEN is not None:
+            return Env.APAFIN_IMAGETYPERZ_TOKEN
         return super()._get_imagetyperz_token()
 
     def _get_twocaptcha_key(self):
-        if Env.FLATHUNTER_2CAPTCHA_KEY is not None:
-            return Env.FLATHUNTER_2CAPTCHA_KEY
+        if Env.APAFIN_2CAPTCHA_KEY is not None:
+            return Env.APAFIN_2CAPTCHA_KEY
         return super()._get_twocaptcha_key()
 
     def captcha_driver_arguments(self):
-        if Env.FLATHUNTER_HEADLESS_BROWSER is not None:
+        if Env.APAFIN_HEADLESS_BROWSER is not None:
             return [
                 "--no-sandbox",
                 "--headless",
@@ -255,8 +255,8 @@ class Config(CaptchaEnvironmentConfig,YamlConfig):
     """Class to represent apaFin configuration"""
 
     def __init__(self, filename=None):
-        if filename is None and Env.FLATHUNTER_TARGET_URLS is None:
-            raise Exception("Config file loaction must be specified, or FLATHUNTER_TARGET_URLS must be set")
+        if filename is None and Env.APAFIN_TARGET_URLS is None:
+            raise Exception("Config file loaction must be specified, or APAFIN_TARGET_URLS must be set")
         if filename is not None:
             logger.info("Using config path %s", filename)
             if not os.path.exists(filename):
@@ -269,82 +269,82 @@ class Config(CaptchaEnvironmentConfig,YamlConfig):
 
     def database_location(self):
         """Return the location of the database folder"""
-        if Env.FLATHUNTER_DATABASE_LOCATION is not None:
-            return Env.FLATHUNTER_DATABASE_LOCATION
+        if Env.APAFIN_DATABASE_LOCATION is not None:
+            return Env.APAFIN_DATABASE_LOCATION
         return super().database_location()
 
     def target_urls(self):
-        if Env.FLATHUNTER_TARGET_URLS is not None:
-            return Env.FLATHUNTER_TARGET_URLS.split(';')
+        if Env.APAFIN_TARGET_URLS is not None:
+            return Env.APAFIN_TARGET_URLS.split(';')
         return super().target_urls()
 
     def verbose_logging(self):
-        if Env.FLATHUNTER_VERBOSE_LOG is not None:
+        if Env.APAFIN_VERBOSE_LOG is not None:
             return True
         return super().verbose_logging()
 
     def loop_is_active(self):
-        if Env.FLATHUNTER_LOOP_PERIOD_SECONDS is not None:
+        if Env.APAFIN_LOOP_PERIOD_SECONDS is not None:
             return True
         return super().loop_is_active()
 
     def loop_period_seconds(self):
-        if Env.FLATHUNTER_LOOP_PERIOD_SECONDS is not None:
-            return int(Env.FLATHUNTER_LOOP_PERIOD_SECONDS)
+        if Env.APAFIN_LOOP_PERIOD_SECONDS is not None:
+            return int(Env.APAFIN_LOOP_PERIOD_SECONDS)
         return super().loop_period_seconds()
 
     def has_website_config(self):
-        if Env.FLATHUNTER_WEBSITE_SESSION_KEY is not None:
+        if Env.APAFIN_WEBSITE_SESSION_KEY is not None:
             return True
         return super().has_website_config()
 
     def website_session_key(self):
-        if Env.FLATHUNTER_WEBSITE_SESSION_KEY is not None:
-            return Env.FLATHUNTER_WEBSITE_SESSION_KEY
+        if Env.APAFIN_WEBSITE_SESSION_KEY is not None:
+            return Env.APAFIN_WEBSITE_SESSION_KEY
         return super().website_session_key()
 
     def website_domain(self):
-        if Env.FLATHUNTER_WEBSITE_DOMAIN is not None:
-            return Env.FLATHUNTER_WEBSITE_DOMAIN
+        if Env.APAFIN_WEBSITE_DOMAIN is not None:
+            return Env.APAFIN_WEBSITE_DOMAIN
         return super().website_domain()
 
     def website_bot_name(self):
-        if Env.FLATHUNTER_WEBSITE_BOT_NAME is not None:
-            return Env.FLATHUNTER_WEBSITE_BOT_NAME
+        if Env.APAFIN_WEBSITE_BOT_NAME is not None:
+            return Env.APAFIN_WEBSITE_BOT_NAME
         return super().website_bot_name()
 
     def google_cloud_project_id(self):
-        if Env.FLATHUNTER_GOOGLE_CLOUD_PROJECT_ID is not None:
-            return Env.FLATHUNTER_GOOGLE_CLOUD_PROJECT_ID
+        if Env.APAFIN_GOOGLE_CLOUD_PROJECT_ID is not None:
+            return Env.APAFIN_GOOGLE_CLOUD_PROJECT_ID
         return super().google_cloud_project_id()
 
     def message_format(self):
-        if Env.FLATHUNTER_MESSAGE_FORMAT is not None:
-            return '\n'.join(Env.FLATHUNTER_MESSAGE_FORMAT.split('#CR#'))
+        if Env.APAFIN_MESSAGE_FORMAT is not None:
+            return '\n'.join(Env.APAFIN_MESSAGE_FORMAT.split('#CR#'))
         return super().message_format()
 
     def notifiers(self):
-        if Env.FLATHUNTER_NOTIFIERS is not None:
-            return Env.FLATHUNTER_NOTIFIERS.split(",")
+        if Env.APAFIN_NOTIFIERS is not None:
+            return Env.APAFIN_NOTIFIERS.split(",")
         return super().notifiers()
 
     def telegram_bot_token(self):
-        if Env.FLATHUNTER_TELEGRAM_BOT_TOKEN is not None:
-            return Env.FLATHUNTER_TELEGRAM_BOT_TOKEN
+        if Env.APAFIN_TELEGRAM_BOT_TOKEN is not None:
+            return Env.APAFIN_TELEGRAM_BOT_TOKEN
         return super().telegram_bot_token()
 
     def telegram_notify_with_images(self) -> bool:
-        if Env.FLATHUNTER_TELEGRAM_BOT_NOTIFY_WITH_IMAGES is not None:
-            return str(Env.FLATHUNTER_TELEGRAM_BOT_NOTIFY_WITH_IMAGES) == 'true'
+        if Env.APAFIN_TELEGRAM_BOT_NOTIFY_WITH_IMAGES is not None:
+            return str(Env.APAFIN_TELEGRAM_BOT_NOTIFY_WITH_IMAGES) == 'true'
         return super().telegram_notify_with_images()
 
     def telegram_receiver_ids(self):
-        if Env.FLATHUNTER_TELEGRAM_RECEIVER_IDS is not None:
-            return [ int(x) for x in Env.FLATHUNTER_TELEGRAM_RECEIVER_IDS.split(",") ]
+        if Env.APAFIN_TELEGRAM_RECEIVER_IDS is not None:
+            return [ int(x) for x in Env.APAFIN_TELEGRAM_RECEIVER_IDS.split(",") ]
         return super().telegram_receiver_ids()
 
     def mattermost_webhook_url(self):
-        if Env.FLATHUNTER_MATTERMOST_WEBHOOK_URL is not None:
-            return Env.FLATHUNTER_MATTERMOST_WEBHOOK_URL
+        if Env.APAFIN_MATTERMOST_WEBHOOK_URL is not None:
+            return Env.APAFIN_MATTERMOST_WEBHOOK_URL
         return super().mattermost_webhook_url()
 

@@ -38,3 +38,7 @@ $ pipenv run python flathunt.py
 ### Configuration
 
 Before running the project for the first time, copy `config.yaml.dist` to `config.yaml`. The `urls` and `telegram` sections of the config file must be configured according to your requirements before the project will run. 
+
+### Contributions
+
+This repo is a fork of the flathunter repo with adaptation for automatic application made by @PhilTrigu .

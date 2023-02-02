@@ -9,24 +9,7 @@ ApaFin searches the usual websites for new offers based on your filters, attempt
 ## Table of Contents
 - [Background](#background)
 - [Install](#install)
-  - [Prerequisites](#prerequisites)
-  - [Installation on Linux](#installation-on-linux)
-- [Usage](#usage)
-  - [Configuration](#configuration)
-    - [URLs](#urls)
-    - [Telegram](#telegram)
-    - [2Captcha](#2captcha)
-    - [Proxy](#proxy)
-    - [Google API](#google-api)
-  - [Command-line Interface](#command-line-interface)
-  - [Web Interface](#web-interface)
-  - [Docker](#docker)
-  - [Google Cloud Deployment](#google-cloud-deployment)
-- [Testing](#testing)
-- [Maintainers](#maintainers)
-- [Credits](#credits)
-  - [Contributers](#contributers)
-- [Contributing](#contributing)
+- [Configuration](#configuration)
 
 ## Motivation
 
@@ -51,8 +34,6 @@ $ pipenv install
 ```sh
 $ pipenv run python flathunt.py
 ```
-
-## Usage
 
 ### Configuration
 
